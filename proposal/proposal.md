@@ -9,6 +9,22 @@ library(broom)
 
 ## 1. Introduction
 
+We plan on analyzing and interpreting the energy data set to make an
+assessment on how many gallons of fuel the school has used over a span
+of 9-10 years. We are curious about learning how much less emissions the
+school uses from the newly installed insulation system. This will be
+found by calculating how much less oil the school is using, we will be
+able to calculate how much the school has decreased their CO2 emission.
+This data was collected by David Gibson. The data was collected through
+the yearly energy center analysis (we will edit this for accuracy). This
+is a long term goal which is to make COA fossil free, net 0, by 2030.
+Through this project we hope to evaluate whether or not the school is on
+track to meet that goal when it comes to energy use of buildings. Our
+variables include the data the fuel was purchased, the cost, the amount
+of fuel in gallons, (after we talk with David Gibson we will update this
+document to address which specific buildings or areas we would like to
+focus on.)
+
 ## 2. Data
 
 ``` r
