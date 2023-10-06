@@ -7,8 +7,10 @@ library(tidyverse)
 library(broom)
 ```
 
-## 1\. Introduction
+## 1. Introduction
 
-## 2\. Data
+## 2. Data
 
-## 3\. Data analysis plan
+## 3. Ethics review
+
+## 4. Data analysis plan
