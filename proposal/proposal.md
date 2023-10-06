@@ -1,6 +1,6 @@
 Project proposal
 ================
-COA Energy
+COA Energy, Sierra, Hunter, Laila
 
 ``` r
 library(tidyverse)

@@ -1,6 +1,6 @@
 ---
 title: "Project proposal"
-author: "COA Energy"
+author: "COA Energy, Sierra, Hunter, Laila"
 output: github_document
 ---
 
