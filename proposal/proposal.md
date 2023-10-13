@@ -38,8 +38,12 @@ energy_use <- read_excel("../data/energy_use.xlsx")
     ## • `` -> `...10`
 
 ``` r
- #View(energy_use)
+# View(energy_use)
 ```
+
+\<\<\<\<\<\<\< HEAD \## 3. Ethics review Will fill in later. =======
+
+> > > > > > > 0a0b70f168ca8490b73e64953e18098afa3101b6
 
 ## 3. Ethics review
 
@@ -53,3 +57,10 @@ Initially we will focus on the buildings on campus and seek advice from
 David.
 
 Summary Statistics:
+
+``` r
+ggplot(data = energy_use, mapping = aes(x = Building )) +
+geom_bar()
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
