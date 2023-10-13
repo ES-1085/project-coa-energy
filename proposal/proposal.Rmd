@@ -36,6 +36,7 @@ energy_use <- read_excel("../data/energy_use.xlsx")
 Summary Statistics:
 
 ```{r}
-ggplot(data = energy_use, mapping = aes(x = Building )) +
-geom_bar()
+ggplot(data = energy_use) +
+geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
+  coord_flip()
 ```
