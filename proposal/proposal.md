@@ -38,9 +38,18 @@ energy_use <- read_excel("../data/energy_use.xlsx")
     ## • `` -> `...10`
 
 ``` r
-# View(energy_use)
+ #View(energy_use)
 ```
 
 ## 3. Ethics review
 
 ## 4. Data analysis plan
+
+We will use variables such as gallons, we can calculate emissions,
+dates/time in years to see the difference overtime, we also plan on
+touching on pricing and how much money the school has saved over time.
+We will talk to David about which buildings he recommends us to study.
+Initially we will focus on the buildings on campus and seek advice from
+David.
+
+Summary Statistics:

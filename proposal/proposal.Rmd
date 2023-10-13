@@ -18,7 +18,7 @@ library(broom)
 ```{r}
 library(readxl)
 energy_use <- read_excel("../data/energy_use.xlsx")
- View(energy_use)
+ #View(energy_use)
 ```
 ## 3. Ethics review
 
