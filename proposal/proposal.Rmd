@@ -28,6 +28,9 @@ energy_use <- read_excel("../data/energy_use.xlsx")
   We will use variables such as gallons, we can calculate emissions, dates/time in years to see the difference overtime, we also plan on touching on pricing and how much money the school has saved over time. We will talk to David about which buildings he recommends us to study. Initially we will focus on the buildings on campus and seek advice from David. 
 
 ```{r}
+ggplot(data = energy_use) +
+geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
+  coord_flip()
 
 ```
 
@@ -37,6 +40,7 @@ count(Building, Gallons)
 ```
 
 ```{r}
+
 
 ```
 

@@ -53,6 +53,14 @@ Initially we will focus on the buildings on campus and seek advice from
 David.
 
 ``` r
+ggplot(data = energy_use) +
+geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
+  coord_flip()
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
 energy_use %>%
 count(Building, Gallons)
 ```
