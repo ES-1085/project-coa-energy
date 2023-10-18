@@ -60,4 +60,24 @@ geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
   coord_flip()
 ```
 
-![](proposal_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](proposal_files/figure-gfm/Initial%20analysis%20graph-1.png)<!-- -->
+
+``` r
+energy_use %>%
+count(Building, Gallons)
+```
+
+    ## # A tibble: 2,542 × 3
+    ##    Building            Gallons     n
+    ##    <chr>                 <dbl> <int>
+    ##  1 171 Beech Hill Road   -25.5     1
+    ##  2 171 Beech Hill Road     1.8     1
+    ##  3 171 Beech Hill Road     8       1
+    ##  4 171 Beech Hill Road    10       1
+    ##  5 171 Beech Hill Road    11.2     1
+    ##  6 171 Beech Hill Road    13.4     1
+    ##  7 171 Beech Hill Road    14.4     1
+    ##  8 171 Beech Hill Road    14.8     1
+    ##  9 171 Beech Hill Road    15       1
+    ## 10 171 Beech Hill Road    15.3     1
+    ## # ℹ 2,532 more rows
