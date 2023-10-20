@@ -18,9 +18,10 @@ library(broom)
 ```{r Connecting Data}
 library(readxl)
 energy_use <- read_excel("../data/energy_use.xlsx")
-#View(energy_use)
+glimpse(energy_use)
 ```
 https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532
+
 
 ## 3. Ethics review
 
