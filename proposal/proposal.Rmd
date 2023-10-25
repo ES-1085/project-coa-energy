@@ -15,15 +15,19 @@ library(broom)
 
 ## 2. Data
 
-```{r}
+```{r Connecting Data}
 library(readxl)
 energy_use <- read_excel("../data/energy_use.xlsx")
-# View(energy_use)
+glimpse(energy_use)
 ```
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## 3. Ethics review
   Will fill in later. 
 =======
+=======
+https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532
+>>>>>>> 31e6692bdeb6ef3af465e8abf68f8444f4985a08
 
 >>>>>>> 0a0b70f168ca8490b73e64953e18098afa3101b6
 
@@ -35,8 +39,19 @@ energy_use <- read_excel("../data/energy_use.xlsx")
   
 Summary Statistics:
 
-```{r}
+```{r Initial analysis graph}
 ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
   coord_flip()
+
+```
+
+```{r}
+energy_use %>%
+count(Building, Gallons)
+```
+
+```{r}
+
+
 ```

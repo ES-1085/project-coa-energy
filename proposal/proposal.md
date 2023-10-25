@@ -38,12 +38,29 @@ energy_use <- read_excel("../data/energy_use.xlsx")
     ## • `` -> `...10`
 
 ``` r
-# View(energy_use)
+glimpse(energy_use)
 ```
 
+<<<<<<< HEAD
 \<\<\<\<\<\<\< HEAD \## 3. Ethics review Will fill in later. =======
 
 > > > > > > > 0a0b70f168ca8490b73e64953e18098afa3101b6
+=======
+    ## Rows: 2,700
+    ## Columns: 10
+    ## $ `Delivery Date` <dttm> 2014-01-03, 2014-01-03, 2014-01-04, 2014-01-04, 2014-…
+    ## $ `Fuel Type`     <chr> "LIQUIDPROPANE", "DYEDKEROSENE", "#2HEATINGOIL", "#2HE…
+    ## $ `Tank number`   <chr> "Tank14", "Tank27", "Tank24", "Tank3", "Tank5", "Tank1…
+    ## $ Building        <chr> "171 Beech Hill Road", "Witchcliff Apartments", "Dorr …
+    ## $ Gallons         <dbl> 10.0, 170.0, 185.3, 264.9, 281.4, 299.1, 40.9, 71.6, 8…
+    ## $ `Unit Cost`     <dbl> 1.8481, 3.7304, 3.3417, 3.3417, 3.3417, 3.2998, 1.8481…
+    ## $ Cost            <dbl> 18.48, 634.17, 619.22, 885.22, 940.35, 986.97, 75.59, …
+    ## $ ...8            <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+    ## $ ...9            <chr> "Tank 1", NA, "Tank 3", "Tank 4", "Tank 5", NA, "Tank …
+    ## $ ...10           <chr> "Peach House", NA, "Seafox", "Cottage", "Turrets", NA,…
+
+<https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532>
+>>>>>>> 31e6692bdeb6ef3af465e8abf68f8444f4985a08
 
 ## 3. Ethics review
 
@@ -59,8 +76,29 @@ David.
 Summary Statistics:
 
 ``` r
-ggplot(data = energy_use, mapping = aes(x = Building )) +
-geom_bar()
+ggplot(data = energy_use) +
+geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
+  coord_flip()
 ```
 
-![](proposal_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](proposal_files/figure-gfm/Initial%20analysis%20graph-1.png)<!-- -->
+
+``` r
+energy_use %>%
+count(Building, Gallons)
+```
+
+    ## # A tibble: 2,542 × 3
+    ##    Building            Gallons     n
+    ##    <chr>                 <dbl> <int>
+    ##  1 171 Beech Hill Road   -25.5     1
+    ##  2 171 Beech Hill Road     1.8     1
+    ##  3 171 Beech Hill Road     8       1
+    ##  4 171 Beech Hill Road    10       1
+    ##  5 171 Beech Hill Road    11.2     1
+    ##  6 171 Beech Hill Road    13.4     1
+    ##  7 171 Beech Hill Road    14.4     1
+    ##  8 171 Beech Hill Road    14.8     1
+    ##  9 171 Beech Hill Road    15       1
+    ## 10 171 Beech Hill Road    15.3     1
+    ## # ℹ 2,532 more rows
