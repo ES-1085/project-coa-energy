@@ -29,6 +29,11 @@ https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gi
 ## 3. Ethics review
 
 ## 4. Data analysis plan
+  We will use variables such as gallons, we can calculate emissions, dates/time in years to see the difference overtime, we also plan on touching on pricing and how much money the school has saved over time. We will talk to David about which buildings he recommends us to study. Initially we will focus on the buildings on campus and seek advice from David. 
+  We plan on making a bar plots to visualize and analyze which buildings use the most fuel, and see how their fuel needs associated prices have changed overtime. We believe we will see the most effect from heat pump and insulation installation at Witchcliff, Seafox, Davis, and Blair-Tyson. We will use line graphs to show their fuel uses over long periods of time. Using a Violin graph, we hope to see if we can tell any effects of heat pump or insulation directly, and the differing effects of seasons on each building. Animations may also be able to show this change effectively due to the many years of data available. For finer analysis we can also facet wrap graphs side by side. 
+  On top of this, we will analyze the effectiveness of different types of fuel, and if there is any visible differences according to total gallons used and amount of deliveries needed. 
+  
+  
   We will use variables such as gallons, we can calculate emissions, dates/time in years to see the difference overtime, we also plan on touching on pricing and how much money the school has saved over time. We will talk to David about which buildings he recommends us to study. Turrets and Blair Tyson. Going forward Seafox, Davis. Initially we will focus on the buildings on campus and seek advice from David. 
   
 Summary Statistics:
@@ -38,6 +43,13 @@ ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
   coord_flip()
 ```
+
+```{r}
+energy_use %>%
+  sum(Gallons) 
+```
+
+
 
 ```{r}
 energy_use %>%
