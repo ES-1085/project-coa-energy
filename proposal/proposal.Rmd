@@ -21,8 +21,10 @@ library(readxl)
 energy_use <- read_excel("../data/energy_use.xlsx")
 glimpse(energy_use)
 ```
-https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532
 
+## 3. Ethics review
+
+https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532
 
 ## 3. Ethics review
 
@@ -32,6 +34,9 @@ https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gi
   On top of this, we will analyze the effectiveness of different types of fuel, and if there is any visible differences according to total gallons used and amount of deliveries needed. 
   
   
+  We will use variables such as gallons, we can calculate emissions, dates/time in years to see the difference overtime, we also plan on touching on pricing and how much money the school has saved over time. We will talk to David about which buildings he recommends us to study. Turrets and Blair Tyson. Going forward Seafox, Davis. Initially we will focus on the buildings on campus and seek advice from David. 
+  
+Summary Statistics:
 
 ```{r Initial analysis graph}
 ggplot(data = energy_use) +
@@ -56,5 +61,3 @@ count(Building, Gallons)
 
 
 ```
-
-

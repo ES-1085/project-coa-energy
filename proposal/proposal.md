@@ -66,6 +66,8 @@ glimpse(energy_use)
     ## $ ...9            <chr> "Tank 1", NA, "Tank 3", "Tank 4", "Tank 5", NA, "Tank …
     ## $ ...10           <chr> "Peach House", NA, "Seafox", "Cottage", "Turrets", NA,…
 
+## 3. Ethics review
+
 <https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532>
 
 ## 3. Ethics review
@@ -76,8 +78,10 @@ We will use variables such as gallons, we can calculate emissions,
 dates/time in years to see the difference overtime, we also plan on
 touching on pricing and how much money the school has saved over time.
 We will talk to David about which buildings he recommends us to study.
-Initially we will focus on the buildings on campus and seek advice from
-David.
+Turrets and Blair Tyson. Going forward Seafox, Davis. Initially we will
+focus on the buildings on campus and seek advice from David.
+
+Summary Statistics:
 
 ``` r
 ggplot(data = energy_use) +
