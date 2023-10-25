@@ -25,7 +25,17 @@ buildings we will focus on will be Turrets and Blair-Tyson, as well as
 Seafox and Davis and other on campus locations with the proper data. The
 dataset is not fully up to date with the effects of new heat system
 installations, nor will they be until the end of the year so this will
-not be a fully comprehensive analysis until those can updated.
+not be a fully comprehensive analysis until those can updated. Although
+most effects from the transfer won’t be visible yet, many systems are
+being fully transitioned into electric heating that is being funded by a
+newly constructed solar panel array outside of Bangor for green
+renewable energy. This means that the fossil fuel requirements will be
+reduced to zero for buildings that have undergone heat-pump
+installations or insulation. We will work with the price requirements of
+fuel for multiple years of on campus buildings, as well as the price of
+heat pump and insulation installations. Using this, we plan to show a
+basic analysis on the saved fuel costs when compared to the overall
+price of the transition.
 
 ## 2. Data
 
