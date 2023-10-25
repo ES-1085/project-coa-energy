@@ -37,7 +37,6 @@ Summary Statistics:
 ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
   coord_flip()
-
 ```
 
 ```{r}
