@@ -7,7 +7,7 @@ using the following format.
 
 ## name of data file
 
-- `variable1`: Description of variable 1
-- `variable2`: Description of variable 2
-- `variable3`: Description of variable 3
+- `variable1`: Building 
+- `variable2`: Gallons
+- `variable3`: Cost
 - ...

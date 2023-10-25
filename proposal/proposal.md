@@ -43,11 +43,6 @@ energy_use <- read_excel("../data/energy_use.xlsx")
 glimpse(energy_use)
 ```
 
-<<<<<<< HEAD
-\<\<\<\<\<\<\< HEAD \## 3. Ethics review Will fill in later. =======
-
-> > > > > > > 0a0b70f168ca8490b73e64953e18098afa3101b6
-=======
     ## Rows: 2,700
     ## Columns: 10
     ## $ `Delivery Date` <dttm> 2014-01-03, 2014-01-03, 2014-01-04, 2014-01-04, 2014-…
@@ -61,8 +56,9 @@ glimpse(energy_use)
     ## $ ...9            <chr> "Tank 1", NA, "Tank 3", "Tank 4", "Tank 5", NA, "Tank …
     ## $ ...10           <chr> "Peach House", NA, "Seafox", "Cottage", "Turrets", NA,…
 
+## 3. Ethics review
+
 <https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532>
->>>>>>> 31e6692bdeb6ef3af465e8abf68f8444f4985a08
 
 ## 3. Ethics review
 
@@ -72,8 +68,8 @@ We will use variables such as gallons, we can calculate emissions,
 dates/time in years to see the difference overtime, we also plan on
 touching on pricing and how much money the school has saved over time.
 We will talk to David about which buildings he recommends us to study.
-Initially we will focus on the buildings on campus and seek advice from
-David.
+Turrets and Blair Tyson. Going forward Seafox, Davis. Initially we will
+focus on the buildings on campus and seek advice from David.
 
 Summary Statistics:
 
