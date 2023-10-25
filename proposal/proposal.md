@@ -78,8 +78,26 @@ We will use variables such as gallons, we can calculate emissions,
 dates/time in years to see the difference overtime, we also plan on
 touching on pricing and how much money the school has saved over time.
 We will talk to David about which buildings he recommends us to study.
-Turrets and Blair Tyson. Going forward Seafox, Davis. Initially we will
-focus on the buildings on campus and seek advice from David.
+Initially we will focus on the buildings on campus and seek advice from
+David. We plan on making a bar plots to visualize and analyze which
+buildings use the most fuel, and see how their fuel needs associated
+prices have changed overtime. We believe we will see the most effect
+from heat pump and insulation installation at Witchcliff, Seafox, Davis,
+and Blair-Tyson. We will use line graphs to show their fuel uses over
+long periods of time. Using a Violin graph, we hope to see if we can
+tell any effects of heat pump or insulation directly, and the differing
+effects of seasons on each building. Animations may also be able to show
+this change effectively due to the many years of data available. For
+finer analysis we can also facet wrap graphs side by side. On top of
+this, we will analyze the effectiveness of different types of fuel, and
+if there is any visible differences according to total gallons used and
+amount of deliveries needed. We will use variables such as gallons, we
+can calculate emissions, dates/time in years to see the difference
+overtime, we also plan on touching on pricing and how much money the
+school has saved over time. We will talk to David about which buildings
+he recommends us to study. Turrets and Blair Tyson. Going forward
+Seafox, Davis. Initially we will focus on the buildings on campus and
+seek advice from David.
 
 Summary Statistics:
 
@@ -90,6 +108,28 @@ geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
 ```
 
 ![](proposal_files/figure-gfm/Initial%20analysis%20graph-1.png)<!-- -->
+
+``` r
+energy_use %>%
+  group_by(Building) %>%
+  summarize(total_gallons = sum(Gallons, na.rm = FALSE)) %>% 
+arrange(desc(total_gallons))
+```
+
+    ## # A tibble: 28 × 2
+    ##    Building           total_gallons
+    ##    <chr>                      <dbl>
+    ##  1 Arts & Sci + Gates       144394.
+    ##  2 Kaelber                  103610.
+    ##  3 Blair Tyson               73379.
+    ##  4 Dorr NHM                  40871.
+    ##  5 Seafox                    38715.
+    ##  6 Davis Center              31814.
+    ##  7 Davis Village             27151.
+    ##  8 Turrets                   25805.
+    ##  9 Turrets Annex             20089 
+    ## 10 Witchcliff                12952.
+    ## # ℹ 18 more rows
 
 ``` r
 energy_use %>%
