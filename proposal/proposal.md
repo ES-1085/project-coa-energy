@@ -72,6 +72,19 @@ glimpse(energy_use)
 
 ## 3. Ethics review
 
+The biases that could effect our data visualizations and how the data
+was collected could be believing that the school has completely
+transformed their heating systems to electric from fossil fuels. We are
+aware that that is not the case. We are also aware that the fueled
+heaters were on for a part of the year that the school was not intending
+for. This is not able to be seen in the data because the fuel tanks are
+no longer receiving fuel refills. We also did not collect the data
+ourselves. This data was collected by David Gibson and others. We do not
+need to worry about misrepresentation or misleading information when it
+comes to people, there would be no negative effects on people. However,
+creating incorrect data visualizations and interpretations would be
+confusing.
+
 ## 4. Data analysis plan
 
 We will use variables such as gallons, we can calculate emissions,
