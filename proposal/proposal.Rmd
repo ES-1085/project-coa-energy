@@ -39,9 +39,3 @@ energy_use %>%
 count(Building, Gallons)
 ```
 
-```{r}
-
-
-```
-
-
