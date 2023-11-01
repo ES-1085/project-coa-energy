@@ -80,6 +80,7 @@ energy_use %>%
 ```{r }
 ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
+  coord_flip()
 ```
 
 ```{r filter-Delivery Date}
