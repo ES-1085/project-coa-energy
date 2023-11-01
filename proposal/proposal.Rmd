@@ -68,6 +68,17 @@ ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
   coord_flip()
 
 ```
+```{r}
+energy_use %>%
+  group_by(Building) %>%
+  summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
+  drop_na() %>%
+ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals, )) +
+         geom_col() +
+  coord_flip()
+#Messing around to
+```
+
 
 ```{r Mutate Turrets}
 energy_use %>%
@@ -81,13 +92,6 @@ energy_use %>%
 ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
 ```
-
-
-
-
-
-
-
 
 
 
