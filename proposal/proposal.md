@@ -163,3 +163,26 @@ count(Building, Gallons)
     ##  9 171 Beech Hill Road    15       1
     ## 10 171 Beech Hill Road    15.3     1
     ## # ℹ 2,532 more rows
+
+``` r
+energy_use %>%
+  filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
+```
+
+    ## # A tibble: 221 × 10
+    ##    `Delivery Date`     `Fuel Type`   `Tank number` Building  Gallons `Unit Cost`
+    ##    <dttm>              <chr>         <chr>         <chr>       <dbl>       <dbl>
+    ##  1 2022-01-06 00:00:00 DYEDKEROSENE  Tank26        Witchcli…    62.2        3.26
+    ##  2 2022-01-06 00:00:00 DYEDKEROSENE  Tank27        Witchcli…   125.         3.26
+    ##  3 2022-01-06 00:00:00 LIQUIDPROPANE Tank37        Turrets …   232.         1.80
+    ##  4 2022-01-06 00:00:00 LIQUIDPROPANE Tank8         Arts & S…   583.         1.80
+    ##  5 2022-01-07 00:00:00 LIQUIDPROPANE Tank31        Davis Vi…    89.1        1.79
+    ##  6 2022-01-07 00:00:00 #2HEATINGOIL  Tank33        PRF         179.         2.94
+    ##  7 2022-01-07 00:00:00 LIQUIDPROPANE Tank35        B&G          21.1        1.79
+    ##  8 2022-01-08 00:00:00 #2HEATINGOIL  Tank24        Dorr NHM     47.7        2.85
+    ##  9 2022-01-12 00:00:00 LIQUIDPROPANE Tank10        Hatchery     25.4        1.84
+    ## 10 2022-01-13 00:00:00 #2HEATINGOIL  Tank24        Dorr NHM    132.         2.98
+    ## # ℹ 211 more rows
+    ## # ℹ 4 more variables: Cost <dbl>, ...8 <lgl>, ...9 <chr>, ...10 <chr>
+
+Repeating yearly filter to compare multiple years- animation?
