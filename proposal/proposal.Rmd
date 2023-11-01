@@ -51,11 +51,10 @@ energy_use %>%
 arrange(desc(total_gallons))
 ```
 
-
-
 ```{r}
 energy_use %>%
 count(Building, Gallons)
+
 ```
 ```{r Gallon for each Building}
 energy_use %>%
@@ -105,5 +104,4 @@ energy_use %>%
 ```{r}
 
 ```
-Repeating yearly filter to compare multiple years- animation?
 
