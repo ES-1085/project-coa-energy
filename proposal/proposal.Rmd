@@ -57,7 +57,30 @@ arrange(desc(total_gallons))
 energy_use %>%
 count(Building, Gallons)
 ```
+```{r Gallon for each Building}
+energy_use %>%
+  group_by(Building) %>%
+  summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
+  drop_na() %>%
+ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
+         geom_col() +
+         labs(title = "Gallons Used by Each Building", x = "Building", y = "Number of Gallons") +
+  coord_flip()
 
+```
+
+```{r Mutate Turrets}
+energy_use %>%
+   mutate(Building = case_when(Building %in% c("Turrets", "Turrets Annex") ~ "Turrets",
+                            
+                               TRUE ~ Building)) %>%
+  distinct(Building)
+```
+
+```{r }
+ggplot(data = energy_use) +
+geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
+```
 
 
 
