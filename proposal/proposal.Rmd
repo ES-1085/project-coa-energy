@@ -56,6 +56,7 @@ energy_use %>%
 count(Building, Gallons)
 
 ```
+
 ```{r Gallon for each Building}
 energy_use %>%
   group_by(Building) %>%
@@ -68,7 +69,7 @@ ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
 
 ```
 
-```{r Mutate Turrets}
+```{r Mutate-Turrets}
 energy_use %>%
    mutate(Building = case_when(Building %in% c("Turrets", "Turrets Annex") ~ "Turrets",
                             
@@ -81,23 +82,18 @@ ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
 ```{r filter-Delivery Date}
 energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
-```{r}
 
+```{r}
+energy_use %>% 
+ filter(Building == c("Turrets","Seafox","Turrets Annex", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  ggplot() +
+  geom_smooth(mapping = aes(x = `Delivery Date`, y = Gallons ))+
+  facet_wrap(~Building)
 ```
 
