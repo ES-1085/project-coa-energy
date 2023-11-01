@@ -59,3 +59,24 @@ count(Building, Gallons)
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+```{r filter-Delivery Date}
+energy_use %>%
+  filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
+```
+```{r}
+
+```
+Repeating yearly filter to compare multiple years- animation?
+
