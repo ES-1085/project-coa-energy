@@ -87,7 +87,6 @@ geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
 energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
-<<<<<<< HEAD
 
 Repeating yearly filter to compare multiple years- animation?
 
@@ -105,7 +104,6 @@ visdat::vis_dat(energy_use)
 energy_use %>%
 select()
 ```
-=======
 I made a new dataset (new_data) where Turrets Annex is labeled Turrets:
 
 ```{r faceted-lineplot-gallons-deliverydate}
@@ -139,6 +137,11 @@ new_data %>%
   summarise(across(c(Building, `Delivery Date`), sum))
 ```
 
->>>>>>> a3b8c23f79c75aee6df01fe5c24f5fe31dca4988
+```{r}
+visdat::vis_miss(energy_use)
+```
 
-t
+```{r}
+naniar::gg_miss_var(energy_use)
+```
+
