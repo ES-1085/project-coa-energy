@@ -18,7 +18,7 @@ library(broom)
 
 ```{r Connecting Data}
 library(readxl)
-energy_use <- read_excel("../data/energy_use.xlsx")
+energy_use <- read_excel("../data/energy_use.xlsx", na = "NA")
 glimpse(energy_use)
 ```
 
@@ -104,10 +104,6 @@ visdat::vis_dat(energy_use)
 energy_use %>%
 select()
 ```
-<<<<<<< HEAD
-
-=======
->>>>>>> 685fbc1494dc9f9fad1ebeb3f86a7a263509573a
 I made a new dataset (new_data) where Turrets Annex is labeled Turrets:
 
 ```{r faceted-lineplot-gallons-deliverydate}
@@ -156,3 +152,15 @@ new_energy_use <- new_data %>%
  mutate() %>%
 select(-c(`...8`,`...9`,`...10`))
 ````
+
+```{r}
+new_energy_use %>%
+  mutate(Building = case_when(Building == "NA" ~ NA,
+                              TRUE ~ Building)) %>%
+  drop_na(Building) %>%
+ggplot(aes(x = Building,
+           y = Gallons)) +
+  geom_miss_point(alpha = 0.5)+
+coord_flip()
+```
+
