@@ -70,11 +70,11 @@ ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
 ```
 
 ```{r Mutate-Turrets}
-energy_use %>%
+new_data <- energy_use %>%
    mutate(Building = case_when(Building %in% c("Turrets", "Turrets Annex") ~ "Turrets",
                             
-                               TRUE ~ Building)) %>%
-  distinct(Building)
+                               TRUE ~ Building)) #%>%
+  #distinct(Building)
 ```
 
 ```{r }
@@ -87,7 +87,24 @@ geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
 energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
+I made a new dataset (new_data) where Turrets Annex is labeled Turrets:
 
+```{r faceted-lineplot-gallons-deliverydate}
+new_data %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Building)
+```
 ```{r}
 energy_use %>% 
  filter(Building == c("Turrets","Seafox","Turrets Annex", "Blair Tyson", "Davis Center" )) %>%
@@ -97,4 +114,11 @@ energy_use %>%
   geom_smooth(mapping = aes(x = `Delivery Date`, y = Gallons ))+
   facet_wrap(~Building)
 ```
+```{r}
+new_data %>%
+  group_by(`Delivery Date`, Building) %>% 
+  summarise(across(c(Building, `Delivery Date`), sum))
+```
 
+
+t
