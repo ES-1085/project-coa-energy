@@ -104,7 +104,10 @@ visdat::vis_dat(energy_use)
 energy_use %>%
 select()
 ```
+<<<<<<< HEAD
 
+=======
+>>>>>>> 685fbc1494dc9f9fad1ebeb3f86a7a263509573a
 I made a new dataset (new_data) where Turrets Annex is labeled Turrets:
 
 ```{r faceted-lineplot-gallons-deliverydate}
@@ -139,3 +142,17 @@ new_data %>%
   group_by(`Delivery Date`, Building) %>% 
   summarise(across(c(Building, `Delivery Date`), sum))
 ```
+
+```{r}
+visdat::vis_miss(energy_use)
+```
+
+```{r}
+naniar::gg_miss_var(energy_use)
+```
+
+``` {r}
+new_energy_use <- new_data %>%
+ mutate() %>%
+select(-c(`...8`,`...9`,`...10`))
+````
