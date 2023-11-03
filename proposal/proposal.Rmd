@@ -164,3 +164,4 @@ ggplot(aes(x = Building,
 coord_flip()
 ```
 
+We should label our graphs and charts. We can put the important information in and the rest of what we were exploring later. When we present we will export the charts/graphs. 
