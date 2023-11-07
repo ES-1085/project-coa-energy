@@ -164,13 +164,13 @@ visdat::vis_miss(energy_use)
 naniar::gg_miss_var(energy_use)
 ```
 
-``` {r}
+``` {r new_energy_use}
 new_energy_use <- new_data %>%
  mutate() %>%
 select(-c(`...8`,`...9`,`...10`))
-````
+```
 
-```{r}
+```{r missing_data}
 new_energy_use %>%
   mutate(Building = case_when(Building == "NA" ~ NA,
                               TRUE ~ Building)) %>%
@@ -182,3 +182,42 @@ coord_flip()
 ```
 
 We should label our graphs and charts. We can put the important information in and the rest of what we were exploring later. When we present we will export the charts/graphs. 
+
+
+```{r}
+new_energy_use %>% 
+ filter(Building %in% c("Turrets")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Year)
+```
+```{r}
+new_energy_use %>% 
+ filter(Building %in% c("Davis Center")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Year)
+```
+
+
+
+
+
