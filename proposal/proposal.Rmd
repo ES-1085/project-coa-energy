@@ -92,22 +92,6 @@ visdat::vis_dat(new_energy_use)
 #class exercise to view type of variables
 ```
 
-```{r faceted-lineplot-gallons-deliverydate}
-new_data %>% 
- filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-  select(Building , Gallons, `Delivery Date`) %>%
-  arrange(`Delivery Date`) %>%
-  mutate(Year = year(`Delivery Date`),
-         Month = month(`Delivery Date`),
-         Week = week(`Delivery Date`)) %>%
-  drop_na(Gallons) %>%
-  group_by(Building, Week, Year) %>% 
-  summarize(Gallons = sum(Gallons, na.rm = T),
-            cumulative_Gallons = cumsum(Gallons)) %>%
-  ggplot() +
-  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
-  facet_wrap(~Building)
-```
 
 
 ```{r filter-Delivery_Date}
@@ -115,20 +99,6 @@ energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
 
-
-```{r}
-new_energy_use %>% 
- filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-  select(Building , Gallons, `Delivery Date`) %>%
-  arrange(`Delivery Date`) %>%
-  mutate(Year = year(`Delivery Date`),
-         Month = month(`Delivery Date`),
-         Week = week(`Delivery Date`)) %>%
-  ggplot() +
-  geom_line(mapping = aes(x = `Delivery Date`, y = Gallons, color = as.factor(Year))) +
-  facet_wrap(~Building)
-  
-```
 
 ```{r missing_variables1}
 visdat::vis_miss(energy_use)
@@ -169,6 +139,36 @@ coord_flip()
 ```
 
 GRAPHS:
+```{r}
+new_energy_use %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = `Delivery Date`, y = Gallons, color = as.factor(Year))) +
+  facet_wrap(~Building)
+  
+```
+
+```{r faceted-lineplot-gallons-deliverydate}
+new_data %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Building)
+```
 
 ```{r fuel_type_usage}
 ggplot(data = new_energy_use) +
