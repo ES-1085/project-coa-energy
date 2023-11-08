@@ -118,7 +118,7 @@ select(-c(`...8`,`...9`,`...10`))
 ```
 
 ``` {r}
-new_energy_use <- new_data1 %>%
+new_energy_use <- new_data %>%
  mutate() %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
