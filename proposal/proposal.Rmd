@@ -135,7 +135,7 @@ new_data %>%
 ```
 
 
-```{r filter-Delivery Date}
+```{r filter-Delivery_Date}
 energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
@@ -216,6 +216,42 @@ new_energy_use %>%
   geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
   facet_wrap(~Year)
 ```
+
+```{r Blair_Tyson_Linegraph}
+new_energy_use %>% 
+ filter(Building %in% c("Blair Tyson")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Year)
+```
+
+```{r Seafox_Linegraph}
+new_energy_use %>% 
+ filter(Building %in% c("Seafox")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Year)
+```
+
+
 
 
 ```{r Davis_Center_Fueluse}
