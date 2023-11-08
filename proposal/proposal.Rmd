@@ -184,7 +184,7 @@ coord_flip()
 We should label our graphs and charts. We can put the important information in and the rest of what we were exploring later. When we present we will export the charts/graphs. 
 
 
-```{r}
+```{r Turrets_Linegraphs}
 new_energy_use %>% 
  filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
@@ -200,7 +200,7 @@ new_energy_use %>%
   geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
   facet_wrap(~Year)
 ```
-```{r}
+```{r Davis_Center_Linegraphs}
 new_energy_use %>% 
  filter(Building %in% c("Davis Center")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
@@ -215,6 +215,40 @@ new_energy_use %>%
   ggplot() +
   geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
   facet_wrap(~Year)
+```
+
+
+```{r Davis_Center_Fueluse}
+new_energy_use %>% 
+  filter(Building %in% c("Davis Center")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Year, y = cumulative_Gallons, color = "Fuel Type"))
+```
+
+```{r}
+new_energy_use %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+ggplot() + 
+  geom_col(aes(x = Building, y = cumulative_Gallons, color = "Fuel Type")) 
+
 ```
 
 
