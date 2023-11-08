@@ -39,9 +39,16 @@ https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gi
 Summary Statistics:
 
 ```{r Initial analysis graph}
-ggplot(data = energy_use) +
+image <- ggplot(data = energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
   coord_flip()
+
+```
+
+```{r}
+#pdf(file = 'output/image.pdf')
+file_path <- ('/cloud/project/extra')
+ggsave(filename = "myplot.png", path = file_path, plot = image, device = "png")
 ```
 
 ```{r}
