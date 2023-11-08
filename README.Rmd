@@ -25,7 +25,7 @@ Your results with proper output and graphics go in your presentation, this space
 
 ## Presentation
 
-Our presentation can be found [here](presentation/presentation.html).
+Our presentation can be found [here](https://docs.google.com/presentation/d/1t2GxDbUH6NDmP4Pe5QId8575PwLDZYPMa0FtLBfIIRo/edit).
 
 ## Data 
 

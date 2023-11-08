@@ -95,7 +95,7 @@ geom_bar( mapping = aes(x = Building, fill = `Gallons` )) +
 ```
 
 ```{r filter-Delivery Date}
-energy_use %>%
+new_energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
 
@@ -108,15 +108,8 @@ library(naniar)
 ```
 
 ```{r}
-visdat::vis_dat(energy_use)
+visdat::vis_dat(new_energy_use)
 ```
-
-```{r}
-energy_use %>%
-select()
-```
-I made a new dataset (new_data) where Turrets Annex is labeled Turrets:
-
 ```{r faceted-lineplot-gallons-deliverydate}
 new_data %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
@@ -133,6 +126,8 @@ new_data %>%
   geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
   facet_wrap(~Building)
 ```
+<<<<<<< HEAD
+=======
 
 
 ```{r filter-Delivery_Date}
@@ -140,20 +135,25 @@ energy_use %>%
   filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
 ```
 
+>>>>>>> 3177ea43a302899bbc3f13f54dc40a6d62368ead
 ```{r}
-energy_use %>% 
- filter(Building == c("Turrets","Seafox","Turrets Annex", "Blair Tyson", "Davis Center" )) %>%
+new_energy_use %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
   ggplot() +
-  geom_smooth(mapping = aes(x = `Delivery Date`, y = Gallons ))+
+  geom_line(mapping = aes(x = `Delivery Date`, y = Gallons, color = as.factor(Year))) +
   facet_wrap(~Building)
+  
 ```
 
 ```{r}
 new_data %>%
   group_by(`Delivery Date`, Building) %>% 
-  summarise(across(c(Building, `Delivery Date`), sum))
+  summarise(across(c(Building, `Delivery Date`)))
 ```
 
 ```{r}
@@ -179,6 +179,32 @@ ggplot(aes(x = Building,
            y = Gallons)) +
   geom_miss_point(alpha = 0.5)+
 coord_flip()
+```
+
+``` {r}
+new_energy_use %>%
+  data = new_energy_use
+  filter(Building == "Turrets")%>%
+  select(c(`Fuel Type`, Gallons, Building)) %>%
+   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  sum(data$Gallons) %>%
+  arrange(desc(Gallons))
+
+```
+
+``` {r yearly_fuel_data}
+yearly_fuel_data = new_energy_use %>%
+  mutate(Year = year(`Delivery Date`)) %>%
+   group_by(Building, Year) %>% 
+  summarize(total_gallons = sum(Gallons)) %>%
+   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" ))
+    ``` 
+    
+``` {r}
+new_energy_use %>%
+select(Building, Gallons) %>%
+ filter(Building == "Turrets")%>%
+ data <- rowSums( Building[Gallons] )
 ```
 
 We should label our graphs and charts. We can put the important information in and the rest of what we were exploring later. When we present we will export the charts/graphs. 
@@ -286,8 +312,3 @@ ggplot() +
   geom_col(aes(x = Building, y = cumulative_Gallons, color = "Fuel Type")) 
 
 ```
-
-
-
-
-
