@@ -68,6 +68,17 @@ ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
   coord_flip()
 
 ```
+```{r}
+energy_use %>%
+  group_by(Building) %>%
+  summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
+  drop_na() %>%
+ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals, )) +
+         geom_col() +
+  coord_flip()
+#Messing around to
+```
+
 
 ```{r Mutate-Turrets}
 new_data <- energy_use %>%
@@ -115,6 +126,16 @@ new_data %>%
   geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
   facet_wrap(~Building)
 ```
+<<<<<<< HEAD
+=======
+
+
+```{r filter-Delivery Date}
+energy_use %>%
+  filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
+```
+
+>>>>>>> 3177ea43a302899bbc3f13f54dc40a6d62368ead
 ```{r}
 new_energy_use %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
@@ -143,13 +164,13 @@ visdat::vis_miss(energy_use)
 naniar::gg_miss_var(energy_use)
 ```
 
-``` {r}
+``` {r new_energy_use}
 new_energy_use <- new_data %>%
  mutate() %>%
 select(-c(`...8`,`...9`,`...10`))
-````
+```
 
-```{r}
+```{r missing_data}
 new_energy_use %>%
   mutate(Building = case_when(Building == "NA" ~ NA,
                               TRUE ~ Building)) %>%
@@ -184,4 +205,74 @@ new_energy_use %>%
 select(Building, Gallons) %>%
  filter(Building == "Turrets")%>%
  data <- rowSums( Building[Gallons] )
+```
+
+We should label our graphs and charts. We can put the important information in and the rest of what we were exploring later. When we present we will export the charts/graphs. 
+
+
+```{r Turrets_Linegraphs}
+new_energy_use %>% 
+ filter(Building %in% c("Turrets")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Year)
+```
+```{r Davis_Center_Linegraphs}
+new_energy_use %>% 
+ filter(Building %in% c("Davis Center")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Year)
+```
+
+
+```{r Davis_Center_Fueluse}
+new_energy_use %>% 
+  filter(Building %in% c("Davis Center")) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_col(mapping = aes(x = Year, y = cumulative_Gallons, color = "Fuel Type"))
+```
+
+```{r}
+new_energy_use %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+ggplot() + 
+  geom_col(aes(x = Building, y = cumulative_Gallons, color = "Fuel Type")) 
+
 ```
