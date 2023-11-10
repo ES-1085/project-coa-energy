@@ -120,7 +120,7 @@ naniar::gg_miss_var(energy_use)
 
 
 ``` {r}
-new_energy_use <- new_data1 %>%
+new_energy_use <- new_data %>%
  mutate() %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
@@ -336,9 +336,6 @@ new_energy_use %>%
 
 ```{r Davis_Center_Fueluse}
 new_energy_use %>% 
-  mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
-                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
-                                 TRUE ~ `Fuel Type`)) %>%
   filter(Building %in% c("Davis Center", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -355,19 +352,76 @@ new_energy_use %>%
   geom_vline(aes(xintercept = Month_Date[20]))
 ```
 
-```{r}
+```{r Blair_Tyson_Fueluse}
+new_energy_use %>% 
+  filter(Building %in% c("Blair Tyson", "")) %>%
+  select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  mutate(Month_Date = floor_date(`Delivery Date`, unit = "month")) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Month_Date, Year, `Fuel Type`) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
+  geom_vline(aes(xintercept = Month_Date[20]))
+```
+
+```{r Seafox_Fueluse}
+new_energy_use %>% 
+  filter(Building %in% c("Seafox")) %>%
+  select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  mutate(Month_Date = floor_date(`Delivery Date`, unit = "month")) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Month_Date, Year, `Fuel Type`) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
+  geom_vline(aes(xintercept = Month_Date[20])) +
+  facet_wrap(~Building)
+```
+
+```{r Turrets_Fueluse}
+new_energy_use %>% 
+  filter(Building %in% c("Turrets")) %>%
+  select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  mutate(Month_Date = floor_date(`Delivery Date`, unit = "month")) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Month_Date, Year, `Fuel Type`) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
+  geom_vline(aes(xintercept = Month_Date[20])) +
+  facet_wrap(~Building)
+```
+
+
+```{r All_FuelType}
 new_energy_use %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-  select(Building , Gallons, `Delivery Date`) %>%
+  select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
   mutate(Year = year(`Delivery Date`),
          Month = month(`Delivery Date`),
          Week = week(`Delivery Date`)) %>%
   drop_na(Gallons) %>%
-  group_by(Building, Week, Year) %>% 
+  group_by(Building, Week, Year, `Fuel Type`) %>% 
   summarize(Gallons = sum(Gallons, na.rm = T),
             cumulative_Gallons = cumsum(Gallons)) %>%
 ggplot() + 
-  geom_col(aes(x = Building, y = cumulative_Gallons, color = "Fuel Type")) 
+  geom_col(aes(x = Building, y = cumulative_Gallons, fill = `Fuel Type`)) 
 
 ```
