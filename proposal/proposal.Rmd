@@ -7,6 +7,9 @@ output: github_document
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(broom)
+#install.packages(c("ggplot2", "gganimate"))
+library(gifski)
+library(transformr)
 ```
 
 ## 1. Introduction
@@ -125,6 +128,10 @@ new_energy_use <- new_data %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
+                                  `Fuel Type` %in%
+              c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
+                                  `Fuel Type` %in%
+                ("DYEDKEROSENE") ~ "Dyed Kerosene",
                                  TRUE ~ `Fuel Type`))
 ```
 
@@ -238,18 +245,89 @@ yearly_fuel_data = new_energy_use %>%
 fuel_type_yearly <- new_energy_use %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
   mutate(Year = year(`Delivery Date`)) %>%
-   group_by(`Fuel Type`, Year) %>% 
+   group_by(`Fuel Type`, Year, Building) %>% 
   summarize(total_gallons = sum(Gallons)) 
 
 # fuel_type_yearly2 <- fuel_type_yearly %>%
 #   group_by(Building, Year, `Fuel Type`) %>%
 #   summarize(total_gallon_per_building = sum(total_gallons))
 ```
+```{r emissions-fuel-type}
+fuel_type_yearly2 <- fuel_type_yearly %>%
+  mutate(Emissions= case_when("Fuel Oil" %in% `Fuel Type` ~ total_gallons*10.19,
+                              "Heating Oil" %in% `Fuel Type` ~ total_gallons*10.19,
+                              "Liquid Propane" %in% `Fuel Type` ~ total_gallons*5.72))
+```
+
+
+```{r}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~Building)
+```
+```{r}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = sumEmissions)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~Building)
+ summarize(total_gallons = sum(Gallons, na.rm = FALSE))
+
+```
+
+```{r}
+anim <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, color = as.factor(Year))) +
+  geom_point() +
+  labs(title = "Scatter Plot of Emissions Over Time") +
+transition_time(Year)
+  
+animate(anim, renderer = gifski_renderer())
+
+
+
+# fuel_type_yearly2 %>%
+#   filter(Building == "Turrets") %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~Building) +
+#   transition_time(Year)
+```
+```{r}
+anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions)) +
+  geom_smooth()+
+  geom_point()+
+
+  labs(title = "Scatter Plot of Emissions Over Time") +
+transition_time(Year)
+  
+animate(anim2, renderer = gifski_renderer())
+```
+  
+```{r animated graphs of emissions}
+# fuel3 <- fuel_type_yearly2 %>% 
+#   filter(!is.na(Emissions)) %>% 
+fuel_type_yearly3 <- fuel_type_yearly2 %>%
+  arrange(Year) %>% 
+  filter(`Fuel Type` == "Heating Oil")
+
+anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Fuel Type`, nrow = 3)+
+  labs(title = "Scatter Plot of Emissions Over Time") +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+  
+animate(anim2, renderer = gifski_renderer())
+```
   
 ``` {r yearly_fuel_geom_smooth}
 yearly_fuel_data %>%
   ggplot() +
-  geom_smooth(mapping = aes(x = Year, y = total_gallons)) +
+  geom_smooth(mapping = aes(x = Year, y = total_gallons), 
+              color = "navy")+
   labs(title = "Gallons of Fuel Used Throughout the Years by the Four Buildings", y = "Total Gallons", x = "Year") +
  theme_minimal()
 #this graph shows the total gallons used yearly by all the four buildings we are focusing on. We can set the data to be "data" instead of "yearly_fuel_data" if we wanted to see the graph for all buildings. It is pretty cool as it shows the decrease of fuel usage.
@@ -258,7 +336,8 @@ yearly_fuel_data %>%
 ```{r yearly_fuel_geom_smooth_building}
 yearly_fuel_data %>%
   ggplot() +
-  geom_smooth(mapping = aes(x = Year, y = total_gallons)) +
+  geom_smooth(mapping = aes(x = Year, y = total_gallons), 
+              color = "navy") +
   labs(title = "Gallons of Fuel Used Throughout the Years by Each of the Four Buildings", y = "Total Gallons", x = "Year")+
   facet_wrap(~Building)+
  theme_minimal()
@@ -344,7 +423,7 @@ new_energy_use %>%
          Week = week(`Delivery Date`)) %>%
   mutate(Month_Date = floor_date(`Delivery Date`, unit = "month")) %>%
   drop_na(Gallons) %>%
-  group_by(Building, Month_Date, Year, `Fuel Type`) %>% 
+  group_by(Building, Month_Date, Year, `Fuel Type`,Gallons) %>% 
   summarize(Gallons = sum(Gallons, na.rm = T),
             cumulative_Gallons = cumsum(Gallons)) %>%
   ggplot() +
@@ -422,6 +501,7 @@ new_energy_use %>%
   summarize(Gallons = sum(Gallons, na.rm = T),
             cumulative_Gallons = cumsum(Gallons)) %>%
 ggplot() + 
-  geom_col(aes(x = Building, y = cumulative_Gallons, fill = `Fuel Type`)) 
+  geom_col(aes(x = Building, y = cumulative_Gallons, fill = `Fuel Type`)) +
+  coord_flip()
 
 ```
