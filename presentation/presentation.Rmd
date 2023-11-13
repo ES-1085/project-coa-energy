@@ -14,6 +14,74 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+```{r gallons-fueltype-building}
+new_energy_use %>% 
+  group_by(Building, `Fuel Type`) %>%
+  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
+ggplot(mapping = aes(x = Building, fill = `Fuel Type` , y = total_gals)) +
+geom_col() +
+  labs(title = "Gallons of Fuel Used by Each of the Four Building", y = "Total Gallons", x = "Building")+
+  coord_flip()+
+  scale_fill_viridis_d()+
+ theme_minimal()
+```
+
+``` {r yearly_fuel_geom_smooth}
+yearly_fuel_data %>%
+  ggplot() +
+  geom_smooth(mapping = aes(x = Year, y = total_gallons), 
+              color = "navy")+
+  labs(title = "Gallons of Fuel Used Throughout the Years by the Four Buildings", y = "Total Gallons", x = "Year") +
+ theme_minimal()
+#this graph shows the total gallons used yearly by all the four buildings we are focusing on. We can set the data to be "data" instead of "yearly_fuel_data" if we wanted to see the graph for all buildings. It is pretty cool as it shows the decrease of fuel usage.
+```
+
+```{r yearly_fuel_geom_smooth_building}
+yearly_fuel_data %>%
+  ggplot() +
+  geom_smooth(mapping = aes(x = Year, y = total_gallons), 
+              color = "navy") +
+  labs(title = "Gallons of Fuel Used Throughout the Years by Each of the Four Buildings", y = "Total Gallons", x = "Year")+
+  facet_wrap(~Building)+
+ theme_minimal()
+#this graph shows the total gallons used yearly by each of the four buildings we are focusing on.
+```  
+
+```{r animated graphs of emissions}
+# fuel3 <- fuel_type_yearly2 %>% 
+#   filter(!is.na(Emissions)) %>% 
+fuel_type_yearly3 <- fuel_type_yearly2 %>%
+  arrange(Year) %>% 
+  filter(`Fuel Type` == "Heating Oil")
+
+anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Fuel Type`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+  
+animate(anim2, renderer = gifski_renderer())
+#this graph is an animation of emissions per building througout the years by fuel type
+```
+
+```{r emissions by building}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~Building)
+```
+
+```{r emissions by fuel type}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~`Fuel Type`, nrow = 3)
+```
 
 ```{r load-packages, include = FALSE}
 # Add any additional packages you need to this chunk
