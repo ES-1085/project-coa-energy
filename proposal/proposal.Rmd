@@ -119,12 +119,14 @@ select(-c(`...8`,`...9`,`...10`))
 
 ``` {r}
 new_energy_use <- new_data %>%
- mutate() %>%
+ # mutate() %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
-                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
                                  TRUE ~ `Fuel Type`))
 ```
+
+
 
 ```{r missing_data}
 new_energy_use %>%
@@ -235,11 +237,14 @@ yearly_fuel_data %>%
 ```
 
 ```{r yearly_fuel_geom_smooth_building}
+
+improvements <- data.frame(Building = c("Blair Tyson", ""), Improvement_Date = c("", ))
 yearly_fuel_data %>%
   ggplot() +
   geom_smooth(mapping = aes(x = Year, y = total_gallons)) +
               xlab( "Year") +
               ylab ("Gallons") + 
+  geom_vline()
   facet_wrap(~Building)
 #this graph shows the total gallons used yearly by each of the four buildings we are focusing on.
 ``` 
