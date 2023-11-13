@@ -287,12 +287,20 @@ fuel_type_yearly3 <- fuel_type_yearly2 %>%
 anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
   geom_line()+
   geom_point()+
-  facet_wrap(~`Fuel Type`, nrow = 3)+
-  labs(title = "Scatter Plot of Emissions Over Time") +
+  facet_wrap(~`Fuel Type`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
   transition_reveal(Year, range = NULL, keep_last = TRUE)
   
 animate(anim2, renderer = gifski_renderer())
 #this graph is an animation of emissions per building througout the years by fuel type
+```
+```{r}
+saveGIF({
+  for (i in unique(data$Year)) {
+    print(animation + transition_states(Year == i))
+  }
+}, movie.name = "anim2.gif", interval = 0.2, ani.width = 600, ani.height = 400)
 ```
   
 ``` {r yearly_fuel_geom_smooth}
