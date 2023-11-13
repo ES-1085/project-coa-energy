@@ -260,21 +260,28 @@ fuel_type_yearly2 <- fuel_type_yearly %>%
 ```
 
 
-```{r}
+```{r emissions by fuel type}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~`Fuel Type`, nrow = 3)
+```
+```{r emissions by building}
 fuel_type_yearly2 %>%
   ggplot() +
    geom_smooth(mapping = aes(x= Year, y = Emissions)) +
  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
   facet_wrap(~Building)
 ```
-```{r}
-fuel_type_yearly2 %>%
-  ggplot() +
-   geom_smooth(mapping = aes(x= Year, y = sumEmissions)) +
- labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-  facet_wrap(~Building)
- summarize(total_gallons = sum(Gallons, na.rm = FALSE))
 
+```{r}
+# fuel_type_yearly2 %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = sumEmissions)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~Building)
+#  summarize(total_gallons = sum(Gallons, na.rm = FALSE))
 ```
   
 ```{r animated graphs of emissions}

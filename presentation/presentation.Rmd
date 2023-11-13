@@ -48,6 +48,41 @@ yearly_fuel_data %>%
 #this graph shows the total gallons used yearly by each of the four buildings we are focusing on.
 ```  
 
+```{r animated graphs of emissions}
+# fuel3 <- fuel_type_yearly2 %>% 
+#   filter(!is.na(Emissions)) %>% 
+fuel_type_yearly3 <- fuel_type_yearly2 %>%
+  arrange(Year) %>% 
+  filter(`Fuel Type` == "Heating Oil")
+
+anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Fuel Type`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+  
+animate(anim2, renderer = gifski_renderer())
+#this graph is an animation of emissions per building througout the years by fuel type
+```
+
+```{r emissions by building}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~Building)
+```
+
+```{r emissions by fuel type}
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~`Fuel Type`, nrow = 3)
+```
+
 ```{r load-packages, include = FALSE}
 # Add any additional packages you need to this chunk
 library(tidyverse)
