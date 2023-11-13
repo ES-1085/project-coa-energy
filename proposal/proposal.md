@@ -17,7 +17,7 @@ found by calculating how much less oil the school is using, we will be
 able to calculate how much the school has decreased their CO2 emission.
 This data was collected by David Gibson. The data was collected through
 the yearly energy center analysis. This is a long term goal which is to
-make COA fossil free, net 0, by 2030. Through this project we hope to
+make COA fossil fuel free, net 0, by 2030. Through this project we hope to
 evaluate whether or not the school is on track to meet that goal when it
 comes to energy use of buildings. Our variables include the date the
 fuel was purchased, the cost, the amount of fuel in gallons. The
@@ -38,7 +38,7 @@ price of the transition.
 
 ## 2. Data
 
-``` r
+```{r}
 library(readxl)
 energy_use <- read_excel("../data/energy_use.xlsx", na = "NA")
 ```
