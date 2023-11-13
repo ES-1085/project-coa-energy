@@ -276,35 +276,6 @@ fuel_type_yearly2 %>%
  summarize(total_gallons = sum(Gallons, na.rm = FALSE))
 
 ```
-
-```{r}
-anim <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, color = as.factor(Year))) +
-  geom_point() +
-  labs(title = "Scatter Plot of Emissions Over Time") +
-transition_time(Year)
-  
-animate(anim, renderer = gifski_renderer())
-
-
-
-# fuel_type_yearly2 %>%
-#   filter(Building == "Turrets") %>%
-#   ggplot() +
-#    geom_smooth(mapping = aes(x= Year, y = Emissions)) +
-#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   facet_wrap(~Building) +
-#   transition_time(Year)
-```
-```{r}
-anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions)) +
-  geom_smooth()+
-  geom_point()+
-
-  labs(title = "Scatter Plot of Emissions Over Time") +
-transition_time(Year)
-  
-animate(anim2, renderer = gifski_renderer())
-```
   
 ```{r animated graphs of emissions}
 # fuel3 <- fuel_type_yearly2 %>% 
@@ -321,6 +292,7 @@ anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Buildin
   transition_reveal(Year, range = NULL, keep_last = TRUE)
   
 animate(anim2, renderer = gifski_renderer())
+#this graph is an animation of emissions per building througout the years by fuel type
 ```
   
 ``` {r yearly_fuel_geom_smooth}
