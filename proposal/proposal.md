@@ -168,21 +168,15 @@ energy_use %>%
 new_data <- energy_use %>%
    mutate(Building = case_when(Building %in% c("Turrets", "Turrets Annex") ~ "Turrets",
                             
-                               TRUE ~ Building)) #%>%
+                               TRUE ~ Building)) %>% mutate() %>%
+select(-c(`...8`,`...9`,`...10`))
   #distinct(Building)
 ```
 
 ``` r
-new_energy_use <- new_data %>%
- mutate() %>%
-select(-c(`...8`,`...9`,`...10`))
-# this code removes random columns we do not need from the energy_use dataset
-```
-
-``` r
-new_energy_use %>%
+new_data %>%
   group_by(Building) %>%
-  summarize(total_gallons = sum(Gallons, na.rm = FALSE)) %>% 
+  summarize(total_gallons = sum(Gallons, na.rm = FALSE)) %>%
 arrange(desc(total_gallons))
 ```
 
@@ -202,7 +196,7 @@ arrange(desc(total_gallons))
     ## # ℹ 17 more rows
 
 ``` r
-new_energy_use %>%
+new_data %>%
   group_by(Building) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
   drop_na()
@@ -224,7 +218,7 @@ new_energy_use %>%
     ## # ℹ 16 more rows
 
 ``` r
-visdat::vis_dat(new_energy_use)
+visdat::vis_dat(new_data)
 ```
 
 ![](proposal_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
@@ -276,8 +270,10 @@ naniar::gg_miss_var(energy_use)
 
 ``` r
 new_energy_use <- new_data %>%
- # mutate() %>%
-select(-c(`...8`,`...9`,`...10`)) %>%
+filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+select(-c(`Tank number`, `Unit Cost`, Cost)) %>%
+  mutate(Year = year(`Delivery Date`)) %>%
+  select(- `Delivery Date`) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
                                   `Fuel Type` %in%
@@ -286,7 +282,18 @@ select(-c(`...8`,`...9`,`...10`)) %>%
 ```
 
 ``` r
-new_energy_use %>%
+glimpse(new_energy_use)
+```
+
+    ## Rows: 708
+    ## Columns: 4
+    ## $ `Fuel Type` <chr> "Heating Oil", "Heating Oil", "Liquid Propane", "Heating O…
+    ## $ Building    <chr> "Seafox", "Turrets", "Turrets", "Davis Center", "Blair Tys…
+    ## $ Gallons     <dbl> 264.9, 281.4, 71.6, 317.8, 572.7, 282.0, 234.5, 439.6, 251…
+    ## $ Year        <dbl> 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014…
+
+``` r
+new_data %>%
   mutate(Building = case_when(Building == "NA" ~ NA,
                               TRUE ~ Building)) %>%
   drop_na(Building) %>%
@@ -305,7 +312,7 @@ coord_flip()
 GRAPHS:
 
 ``` r
-new_energy_use %>% 
+new_data%>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -318,7 +325,7 @@ new_energy_use %>%
   scale_color_viridis_d()
 ```
 
-![](proposal_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 new_data %>% 
@@ -344,7 +351,7 @@ new_data %>%
 ![](proposal_files/figure-gfm/faceted-lineplot-gallons-deliverydate-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
 ggplot() +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
@@ -375,7 +382,7 @@ ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
 I am not sure what this one is:
 
 ``` r
-new_energy_use %>% 
+new_data%>% 
   group_by(Building, `Fuel Type`) %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
@@ -390,7 +397,7 @@ geom_col() +
     ## `summarise()` has grouped output by 'Building'. You can override using the
     ## `.groups` argument.
 
-![](proposal_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 new_data %>% 
@@ -417,7 +424,7 @@ new_data %>%
 ```
 
 ``` r
-yearly_fuel_data = new_energy_use %>%
+yearly_fuel_data = new_data %>%
   mutate(Year = year(`Delivery Date`)) %>%
    group_by(Building, Year) %>% 
   summarize(total_gallons = sum(Gallons)) %>%
@@ -432,7 +439,7 @@ yearly_fuel_data = new_energy_use %>%
 ```
 
 ``` r
-fuel_type_yearly <- new_energy_use %>%
+fuel_type_yearly <- new_data %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
   mutate(Year = year(`Delivery Date`)) %>%
    group_by(`Fuel Type`, Year, Building) %>% 
@@ -456,71 +463,20 @@ fuel_type_yearly2 <- fuel_type_yearly %>%
 ```
 
 ``` r
-fuel_type_yearly2 %>%
-  ggplot() +
-   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
- labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-  facet_wrap(~`Fuel Type`, nrow = 3)
+# fuel_type_yearly2 %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~`Fuel Type`, nrow = 3)
 ```
-
-    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : span too small.  fewer data values than degrees of freedom.
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : at 2022
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : radius 2.5e-05
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : all data on boundary of neighborhood. make span bigger
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : pseudoinverse used at 2022
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : neighborhood radius 0.005
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : reciprocal condition number 1
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : at 2023
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : radius 2.5e-05
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : all data on boundary of neighborhood. make span bigger
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : There are other near singularities as well. 2.5e-05
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : zero-width neighborhood. make span bigger
-
-    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
-    ## : zero-width neighborhood. make span bigger
-
-    ## Warning: Computation failed in `stat_smooth()`
-    ## Caused by error in `predLoess()`:
-    ## ! NA/NaN/Inf in foreign function call (arg 5)
-
-![](proposal_files/figure-gfm/emissions%20by%20fuel%20type-1.png)<!-- -->
 
 ``` r
-fuel_type_yearly2 %>%
-  ggplot() +
-   geom_smooth(mapping = aes(x= Year, y = Emissions)) +
- labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-  facet_wrap(~Building)
+# fuel_type_yearly2 %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~Building)
 ```
-
-    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
-
-![](proposal_files/figure-gfm/emissions%20by%20building-1.png)<!-- -->
 
 ``` r
 # fuel_type_yearly2 %>%
@@ -594,7 +550,7 @@ yearly_fuel_data %>%
 ```
 
 ``` r
-new_energy_use %>% 
+new_data%>% 
  filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -616,7 +572,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Turrets_Linegraphs-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Davis Center")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -638,7 +594,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Davis_Center_Linegraphs-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Blair Tyson")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -660,7 +616,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Blair_Tyson_Linegraph-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Seafox")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -682,7 +638,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Seafox_Linegraph-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
   filter(Building %in% c("Davis Center", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -705,7 +661,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Davis_Center_Fueluse-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
   filter(Building %in% c("Blair Tyson", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -728,7 +684,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Blair_Tyson_Fueluse-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
   filter(Building %in% c("Seafox")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -752,7 +708,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Seafox_Fueluse-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data%>% 
   filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -776,7 +732,7 @@ new_energy_use %>%
 ![](proposal_files/figure-gfm/Turrets_Fueluse-1.png)<!-- -->
 
 ``` r
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%

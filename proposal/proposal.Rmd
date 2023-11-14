@@ -25,6 +25,7 @@ energy_use <- read_excel("../data/energy_use.xlsx", na = "NA")
 glimpse(energy_use)
 ```
 
+
 ## 3. Ethics review
 
 https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532
@@ -77,13 +78,6 @@ select(-c(`...8`,`...9`,`...10`))
   #distinct(Building)
 ```
 
-``` {r DONT USE new_energy_use}
-# new_energy_use <- new_data %>%
-#  mutate() %>%
-# select(-c(`...8`,`...9`,`...10`))
-# # this code removes random columns we do not need from the energy_use dataset
-#I added the select function to the new_data set to combine new_data and new_energy_use, so moving forward use new_data
-```
 
 ```{r total_gallons_sum1}
 new_data %>%
@@ -123,10 +117,12 @@ naniar::gg_miss_var(energy_use)
 ```
 
 
-``` {r}
+``` {r making the new_energy_use dataset}
 new_energy_use <- new_data %>%
- # mutate() %>%
-select(-c(`...8`,`...9`,`...10`)) %>%
+filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+select(-c(`Tank number`, `Unit Cost`, Cost)) %>%
+  mutate(Year = year(`Delivery Date`)) %>%
+  select(- `Delivery Date`) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
@@ -135,6 +131,10 @@ select(-c(`...8`,`...9`,`...10`)) %>%
                                   `Fuel Type` %in%
                 ("DYEDKEROSENE") ~ "Dyed Kerosene",
                                  TRUE ~ `Fuel Type`))
+```
+
+``` {r glimps new_energy_use}
+glimpse(new_energy_use)
 ```
 
 ```{r missing_data}
@@ -264,19 +264,19 @@ fuel_type_yearly2 <- fuel_type_yearly %>%
 
 
 ```{r emissions by fuel type}
-fuel_type_yearly2 %>%
-  ggplot() +
-   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
- labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-  facet_wrap(~`Fuel Type`, nrow = 3)
+# fuel_type_yearly2 %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~`Fuel Type`, nrow = 3)
 ```
 
 ```{r emissions by building}
-fuel_type_yearly2 %>%
-  ggplot() +
-   geom_smooth(mapping = aes(x= Year, y = Emissions)) +
- labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-  facet_wrap(~Building)
+# fuel_type_yearly2 %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~Building)
 ```
 
 ```{r}
