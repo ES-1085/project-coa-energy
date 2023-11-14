@@ -144,84 +144,112 @@ present we will export the charts/graphs.
 CODE TO ORGANIZE DATA:
 
 ``` r
-energy_use %>%
-  filter(between(`Delivery Date`, as.Date('2022-01-01'), as.Date('2023-01-01'))) 
-```
-
-    ## # A tibble: 221 × 10
-    ##    `Delivery Date`     `Fuel Type`   `Tank number` Building  Gallons `Unit Cost`
-    ##    <dttm>              <chr>         <chr>         <chr>       <dbl>       <dbl>
-    ##  1 2022-01-06 00:00:00 DYEDKEROSENE  Tank26        Witchcli…    62.2        3.26
-    ##  2 2022-01-06 00:00:00 DYEDKEROSENE  Tank27        Witchcli…   125.         3.26
-    ##  3 2022-01-06 00:00:00 LIQUIDPROPANE Tank37        Turrets …   232.         1.80
-    ##  4 2022-01-06 00:00:00 LIQUIDPROPANE Tank8         Arts & S…   583.         1.80
-    ##  5 2022-01-07 00:00:00 LIQUIDPROPANE Tank31        Davis Vi…    89.1        1.79
-    ##  6 2022-01-07 00:00:00 #2HEATINGOIL  Tank33        PRF         179.         2.94
-    ##  7 2022-01-07 00:00:00 LIQUIDPROPANE Tank35        B&G          21.1        1.79
-    ##  8 2022-01-08 00:00:00 #2HEATINGOIL  Tank24        Dorr NHM     47.7        2.85
-    ##  9 2022-01-12 00:00:00 LIQUIDPROPANE Tank10        Hatchery     25.4        1.84
-    ## 10 2022-01-13 00:00:00 #2HEATINGOIL  Tank24        Dorr NHM    132.         2.98
-    ## # ℹ 211 more rows
-    ## # ℹ 4 more variables: Cost <dbl>, ...8 <lgl>, ...9 <chr>, ...10 <chr>
-
-``` r
 new_data <- energy_use %>%
    mutate(Building = case_when(Building %in% c("Turrets", "Turrets Annex") ~ "Turrets",
                             
                                TRUE ~ Building)) %>% mutate() %>%
-select(-c(`...8`,`...9`,`...10`))
+select(-c(`...8`,`...9`,`...10`)) %>%
+      mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
+                                  `Fuel Type` %in%
+              c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
+                                  `Fuel Type` %in%
+                ("DYEDKEROSENE") ~ "Dyed Kerosene",
+                                 TRUE ~ `Fuel Type`))
   #distinct(Building)
 ```
 
 ``` r
-new_data %>%
+new_energy_use <- new_data %>%
+filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+select(-c(`Tank number`, `Unit Cost`, Cost)) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  # select(- `Delivery Date`) %>%
+      mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
+                                  `Fuel Type` %in%
+              c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
+                                  `Fuel Type` %in%
+                ("DYEDKEROSENE") ~ "Dyed Kerosene",
+                                 TRUE ~ `Fuel Type`))
+# filters for the four buildings
+# removes columns we do not use: tank number, cost and unit cost
+# mutates `Delivery Date` to Year
+# mutates fuel type data so that it's easier to read
+```
+
+``` r
+yearly_fuel_data = new_data %>%
+  mutate(Year = year(`Delivery Date`)) %>%
+   group_by(Building, Year) %>% 
+  summarize(total_gallons = sum(Gallons)) %>%
+   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) 
+```
+
+    ## `summarise()` has grouped output by 'Building'. You can override using the
+    ## `.groups` argument.
+
+``` r
+#this code creates the dataset "yearly_fuel_data" which sums up gallon deliveries by the four building per year.
+```
+
+``` r
+fuel_data <- new_energy_use %>%
+  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
+  mutate(Year = year(`Delivery Date`)) %>%
+   group_by(`Fuel Type`, Year, Building) %>% 
+  summarize(total_gallons = sum(Gallons)) %>%
+  mutate(Emissions= case_when("Fuel Oil" %in% `Fuel Type` ~ total_gallons*10.19,
+                              "Heating Oil" %in% `Fuel Type` ~ total_gallons*10.19,
+                              "Liquid Propane" %in% `Fuel Type` ~ total_gallons*5.72))
+```
+
+    ## `summarise()` has grouped output by 'Fuel Type', 'Year'. You can override using
+    ## the `.groups` argument.
+
+``` r
+# this code creates the fuel_data dataset which sums up gallons of fuel and calculates emissions
+```
+
+``` r
+new_energy_use%>%
   group_by(Building) %>%
   summarize(total_gallons = sum(Gallons, na.rm = FALSE)) %>%
 arrange(desc(total_gallons))
 ```
 
-    ## # A tibble: 27 × 2
-    ##    Building           total_gallons
-    ##    <chr>                      <dbl>
-    ##  1 Arts & Sci + Gates       144394.
-    ##  2 Kaelber                  103610.
-    ##  3 Blair Tyson               73379.
-    ##  4 Turrets                   45894.
-    ##  5 Dorr NHM                  40871.
-    ##  6 Seafox                    38715.
-    ##  7 Davis Center              31814.
-    ##  8 Davis Village             27151.
-    ##  9 Witchcliff                12952.
-    ## 10 PRF                       10892.
-    ## # ℹ 17 more rows
+    ## # A tibble: 4 × 2
+    ##   Building     total_gallons
+    ##   <chr>                <dbl>
+    ## 1 Blair Tyson         73379.
+    ## 2 Turrets             45894.
+    ## 3 Seafox              38715.
+    ## 4 Davis Center        31814.
 
 ``` r
-new_data %>%
+new_energy_use %>%
   group_by(Building) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
   drop_na()
 ```
 
-    ## # A tibble: 26 × 2
-    ##    Building                    total_gals
-    ##    <chr>                            <dbl>
-    ##  1 171 Beech Hill Road              1783 
-    ##  2 Arts & Sci + Gates             144394.
-    ##  3 B&G                              8993.
-    ##  4 BHF Farm House                    808.
-    ##  5 BHF Main Bldg/2 Greenhouses      3393.
-    ##  6 BHF New Greenhouse               6005.
-    ##  7 Blair Tyson                     73379.
-    ##  8 CHE Generator                     224.
-    ##  9 Carriage                         6432.
-    ## 10 Cottage                          6868.
-    ## # ℹ 16 more rows
+    ## # A tibble: 4 × 2
+    ##   Building     total_gals
+    ##   <chr>             <dbl>
+    ## 1 Blair Tyson      73379.
+    ## 2 Davis Center     31814.
+    ## 3 Seafox           38715.
+    ## 4 Turrets          45894.
 
 ``` r
 visdat::vis_dat(new_data)
 ```
 
-![](proposal_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 #class exercise to view type of variables
@@ -269,28 +297,18 @@ naniar::gg_miss_var(energy_use)
 ```
 
 ``` r
-new_energy_use <- new_data %>%
-filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-select(-c(`Tank number`, `Unit Cost`, Cost)) %>%
-  mutate(Year = year(`Delivery Date`)) %>%
-  select(- `Delivery Date`) %>%
-      mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
-                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
-                                  `Fuel Type` %in%
-                ("DYEDKEROSENE") ~ "Dyed Kerosene",
-                                 TRUE ~ `Fuel Type`))
-```
-
-``` r
 glimpse(new_energy_use)
 ```
 
     ## Rows: 708
-    ## Columns: 4
-    ## $ `Fuel Type` <chr> "Heating Oil", "Heating Oil", "Liquid Propane", "Heating O…
-    ## $ Building    <chr> "Seafox", "Turrets", "Turrets", "Davis Center", "Blair Tys…
-    ## $ Gallons     <dbl> 264.9, 281.4, 71.6, 317.8, 572.7, 282.0, 234.5, 439.6, 251…
-    ## $ Year        <dbl> 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014…
+    ## Columns: 7
+    ## $ `Delivery Date` <dttm> 2014-01-04, 2014-01-04, 2014-01-06, 2014-01-08, 2014-…
+    ## $ `Fuel Type`     <chr> "Heating Oil", "Heating Oil", "Liquid Propane", "Heati…
+    ## $ Building        <chr> "Seafox", "Turrets", "Turrets", "Davis Center", "Blair…
+    ## $ Gallons         <dbl> 264.9, 281.4, 71.6, 317.8, 572.7, 282.0, 234.5, 439.6,…
+    ## $ Year            <dbl> 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, …
+    ## $ Month           <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, …
+    ## $ Week            <dbl> 1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, …
 
 ``` r
 new_data %>%
@@ -311,78 +329,23 @@ coord_flip()
 
 GRAPHS:
 
-``` r
-new_data%>% 
- filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-  select(Building , Gallons, `Delivery Date`) %>%
-  arrange(`Delivery Date`) %>%
-  mutate(Year = year(`Delivery Date`),
-         Month = month(`Delivery Date`),
-         Week = week(`Delivery Date`)) %>%
-  ggplot() +
-  geom_line(mapping = aes(x = `Delivery Date`, y = Gallons, color = as.factor(Year))) +
-  facet_wrap(~Building)+
-  scale_color_viridis_d()
-```
-
-![](proposal_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+TO PRESENT:
 
 ``` r
-new_data %>% 
- filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-  select(Building , Gallons, `Delivery Date`) %>%
-  arrange(`Delivery Date`) %>%
-  mutate(Year = year(`Delivery Date`),
-         Month = month(`Delivery Date`),
-         Week = week(`Delivery Date`)) %>%
-  drop_na(Gallons) %>%
-  group_by(Building, Week, Year) %>% 
-  summarize(Gallons = sum(Gallons, na.rm = T),
-            cumulative_Gallons = cumsum(Gallons)) %>%
-  ggplot() +
-  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
-  facet_wrap(~Building)+
-  scale_color_viridis_d()
-```
-
-    ## `summarise()` has grouped output by 'Building', 'Week'. You can override using
-    ## the `.groups` argument.
-
-![](proposal_files/figure-gfm/faceted-lineplot-gallons-deliverydate-1.png)<!-- -->
-
-``` r
-new_data %>% 
- filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-ggplot() +
-geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
-  coord_flip()+
-  scale_fill_viridis_d()+
- theme_minimal()
-```
-
-![](proposal_files/figure-gfm/fuel_type_usage-1.png)<!-- -->
-
-``` r
-#fuel type by building
-```
-
-``` r
-energy_use %>%
+new_data %>%
   group_by(Building) %>%
+  drop_na(Building) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
-  drop_na() %>%
-ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
-         geom_col() +
-         labs(title = "Gallons Used by Each Building", x = "Building", y = "Number of Gallons") +
+ggplot() +
+         geom_col(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
+         labs(title = "Gallons Used by Each Building", x = "Building", y = "Total Gallons") +
   coord_flip()
 ```
 
 ![](proposal_files/figure-gfm/Graph%20of%20total%20gallons%20used%20by%20each%20building-1.png)<!-- -->
 
-I am not sure what this one is:
-
 ``` r
-new_data%>% 
+new_energy_use%>% 
   group_by(Building, `Fuel Type`) %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
@@ -397,122 +360,63 @@ geom_col() +
     ## `summarise()` has grouped output by 'Building'. You can override using the
     ## `.groups` argument.
 
-![](proposal_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](proposal_files/figure-gfm/gallons%20of%20fuel%20per%20building%20by%20fuel%20type-1.png)<!-- -->
 
 ``` r
-new_data %>% 
- filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
-  select(Building , Gallons, `Delivery Date`) %>%
-  arrange(`Delivery Date`) %>%
-  mutate(Year = year(`Delivery Date`),
-         Month = month(`Delivery Date`),
-         Week = week(`Delivery Date`)) %>%
-  drop_na(Gallons) %>%
-  group_by(Building, Week, Year) %>% 
+fuel_data %>%
   ggplot() +
-  geom_smooth(mapping = aes(x = Month, y = Gallons)) + 
-  facet_wrap(~Building)+
- theme_minimal()
+   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~`Fuel Type`, nrow = 3) +
+  theme_minimal()
 ```
 
     ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-![](proposal_files/figure-gfm/faceted-smoothplot-gallons-deliverydate-1.png)<!-- -->
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : span too small.  fewer data values than degrees of freedom.
 
-``` r
-#This graph shows use of fuel per building in gallons (not summed so just amount of fuel delivered). We can change x = Month to x = Year or x = Week. We can also change filter building to view either just one or more.
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : at 2022
 
-``` r
-yearly_fuel_data = new_data %>%
-  mutate(Year = year(`Delivery Date`)) %>%
-   group_by(Building, Year) %>% 
-  summarize(total_gallons = sum(Gallons)) %>%
-   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) 
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : radius 2.5e-05
 
-    ## `summarise()` has grouped output by 'Building'. You can override using the
-    ## `.groups` argument.
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : all data on boundary of neighborhood. make span bigger
 
-``` r
-#this code creates the dataset "yearly_fuel_data" which sums up gallon deliveries by the four building per year.
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : pseudoinverse used at 2022
 
-``` r
-fuel_type_yearly <- new_data %>%
-  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
-  mutate(Year = year(`Delivery Date`)) %>%
-   group_by(`Fuel Type`, Year, Building) %>% 
-  summarize(total_gallons = sum(Gallons)) 
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : neighborhood radius 0.005
 
-    ## `summarise()` has grouped output by 'Fuel Type', 'Year'. You can override using
-    ## the `.groups` argument.
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : reciprocal condition number 1
 
-``` r
-# fuel_type_yearly2 <- fuel_type_yearly %>%
-#   group_by(Building, Year, `Fuel Type`) %>%
-#   summarize(total_gallon_per_building = sum(total_gallons))
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : at 2023
 
-``` r
-fuel_type_yearly2 <- fuel_type_yearly %>%
-  mutate(Emissions= case_when("Fuel Oil" %in% `Fuel Type` ~ total_gallons*10.19,
-                              "Heating Oil" %in% `Fuel Type` ~ total_gallons*10.19,
-                              "Liquid Propane" %in% `Fuel Type` ~ total_gallons*5.72))
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : radius 2.5e-05
 
-``` r
-# fuel_type_yearly2 %>%
-#   ggplot() +
-#    geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
-#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   facet_wrap(~`Fuel Type`, nrow = 3)
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : all data on boundary of neighborhood. make span bigger
 
-``` r
-# fuel_type_yearly2 %>%
-#   ggplot() +
-#    geom_smooth(mapping = aes(x= Year, y = Emissions)) +
-#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   facet_wrap(~Building)
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : There are other near singularities as well. 2.5e-05
 
-``` r
-# fuel_type_yearly2 %>%
-#   ggplot() +
-#    geom_smooth(mapping = aes(x= Year, y = sumEmissions)) +
-#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   facet_wrap(~Building)
-#  summarize(total_gallons = sum(Gallons, na.rm = FALSE))
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : zero-width neighborhood. make span bigger
 
-``` r
-# fuel3 <- fuel_type_yearly2 %>% 
-#   filter(!is.na(Emissions)) %>% 
-# fuel_type_yearly3 <- fuel_type_yearly2 %>%
-#   arrange(Year) %>% 
-#   filter(`Fuel Type` == "Heating Oil")
-# 
-# anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
-#   geom_line()+
-#   geom_point()+
-#   facet_wrap(~`Fuel Type`, nrow = 3) +
-#   labs(title = "Emissions Over Time of Buildings by Fuel Type",
-# y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   transition_reveal(Year, range = NULL, keep_last = TRUE)
-#   
-# animate(anim2, renderer = gifski_renderer())
-#this graph is an animation of emissions per building througout the years by fuel type
-```
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : zero-width neighborhood. make span bigger
 
-``` r
-# saveGIF({
-#   for (i in unique(data$Year)) {
-#     print(animation + transition_states(Year == i))
-#   }
-# }, movie.name = "anim2.gif", interval = 0.2, ani.width = 600, ani.height = 400)
-```
+    ## Warning: Computation failed in `stat_smooth()`
+    ## Caused by error in `predLoess()`:
+    ## ! NA/NaN/Inf in foreign function call (arg 5)
+
+![](proposal_files/figure-gfm/emissions%20by%20fuel%20type-1.png)<!-- -->
 
 ``` r
 yearly_fuel_data %>%
@@ -550,6 +454,135 @@ yearly_fuel_data %>%
 ```
 
 ``` r
+fuel_data %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions), 
+              color = "navy") +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon")), title = "Emissions of Each of the Buildings Throughout the Years") +
+  facet_wrap(~Building)+
+  theme_minimal()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+![](proposal_files/figure-gfm/emissions%20by%20building-1.png)<!-- -->
+
+``` r
+fuel_data %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions), 
+              color = "navy") +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon")), title = "Total Emissions of the Buildings Throughout the Years") +
+  theme_minimal()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+![](proposal_files/figure-gfm/emissions%20by%20all%20building-1.png)<!-- -->
+
+``` r
+# fuel3 <- fuel_data %>%
+#   filter(!is.na(Emissions)) %>%
+# fuel_type_yearly3 <- fuel_data %>%
+#   arrange(Year) %>%
+#   filter(`Fuel Type` == "Heating Oil")
+
+# anim2 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = Building)) +
+#   geom_line()+
+#   geom_point()+
+#   facet_wrap(~`Fuel Type`, nrow = 3) +
+#   labs(title = "Emissions Over Time of Buildings by Fuel Type",
+# y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   transition_reveal(Year, range = NULL, keep_last = TRUE)
+#    
+# animate(anim2, renderer = gifski_renderer())
+#this graph is an animation of emissions per building througout the years by fuel type
+```
+
+END OF PRESENTATIN GRAPHS
+
+``` r
+new_data%>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+  select(Building , Gallons, `Delivery Date`) %>%
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = `Delivery Date`, y = Gallons, color = as.factor(Year))) +
+  facet_wrap(~Building)+
+  scale_color_viridis_d()
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+new_energy_use %>% 
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  drop_na(Gallons) %>%
+  group_by(Building, Week, Year) %>% 
+  summarize(Gallons = sum(Gallons, na.rm = T),
+            cumulative_Gallons = cumsum(Gallons)) %>%
+  ggplot() +
+  geom_line(mapping = aes(x = Week, y = cumulative_Gallons, color = as.factor(Year)))+
+  facet_wrap(~Building)+
+  scale_color_viridis_d()
+```
+
+    ## `summarise()` has grouped output by 'Building', 'Week'. You can override using
+    ## the `.groups` argument.
+
+![](proposal_files/figure-gfm/faceted-lineplot-gallons-deliverydate-1.png)<!-- -->
+
+``` r
+new_energy_use %>% 
+ filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
+ggplot() +
+geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
+  coord_flip()+
+  scale_fill_viridis_d()+
+ theme_minimal()
+```
+
+![](proposal_files/figure-gfm/fuel_type_usage-1.png)<!-- -->
+
+``` r
+#fuel type by building
+```
+
+``` r
+new_energy_use %>% 
+  arrange(`Delivery Date`) %>%
+  mutate(Year = year(`Delivery Date`),
+         Month = month(`Delivery Date`),
+         Week = week(`Delivery Date`)) %>%
+  ggplot() +
+  geom_smooth(mapping = aes(x = Month, y = Gallons)) + 
+  facet_wrap(~Building)+
+ theme_minimal()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+![](proposal_files/figure-gfm/faceted-smoothplot-gallons-deliverydate-1.png)<!-- -->
+
+``` r
+#This graph shows use of fuel per building in gallons (not summed so just amount of fuel delivered). We can change x = Month to x = Year or x = Week. We can also change filter building to view either just one or more.
+```
+
+``` r
+# saveGIF({
+#   for (i in unique(data$Year)) {
+#     print(animation + transition_states(Year == i))
+#   }
+# }, movie.name = "anim2.gif", interval = 0.2, ani.width = 600, ani.height = 400)
+```
+
+``` r
 new_data%>% 
  filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
@@ -570,6 +603,10 @@ new_data%>%
     ## the `.groups` argument.
 
 ![](proposal_files/figure-gfm/Turrets_Linegraphs-1.png)<!-- -->
+
+``` r
+#this seperates the linegraphs we made previously to better understand them for Turrets alone.
+```
 
 ``` r
 new_data %>% 
@@ -594,6 +631,10 @@ new_data %>%
 ![](proposal_files/figure-gfm/Davis_Center_Linegraphs-1.png)<!-- -->
 
 ``` r
+#this seperates the linegraphs we made previously to better understand them for Davis Center alone.
+```
+
+``` r
 new_data %>% 
  filter(Building %in% c("Blair Tyson")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
@@ -616,6 +657,10 @@ new_data %>%
 ![](proposal_files/figure-gfm/Blair_Tyson_Linegraph-1.png)<!-- -->
 
 ``` r
+#this seperates the linegraphs we made previously to better understand them for Blair Tyson alone.
+```
+
+``` r
 new_data %>% 
  filter(Building %in% c("Seafox")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
@@ -636,6 +681,10 @@ new_data %>%
     ## the `.groups` argument.
 
 ![](proposal_files/figure-gfm/Seafox_Linegraph-1.png)<!-- -->
+
+``` r
+#this seperates the linegraphs we made previously to better understand them for Seafox alone.
+```
 
 ``` r
 new_data %>% 
