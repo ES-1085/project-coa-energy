@@ -127,15 +127,12 @@ new_energy_use <- new_data %>%
  # mutate() %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
-<<<<<<< HEAD
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
-=======
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
                                   `Fuel Type` %in%
               c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
                                   `Fuel Type` %in%
                 ("DYEDKEROSENE") ~ "Dyed Kerosene",
->>>>>>> 65da090bd2ffe4a1949d989957b302010610aac0
                                  TRUE ~ `Fuel Type`))
 ```
 
