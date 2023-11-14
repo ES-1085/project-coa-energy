@@ -1,6 +1,6 @@
-Project title
+Exploring Energy Efficiency at COA from 2014 to 2023
 ================
-by Team name
+by Hunter, Laila and Sierra
 
 ## Summary
 
@@ -28,6 +28,7 @@ Our presentation can be found
 [here](https://docs.google.com/presentation/d/1t2GxDbUH6NDmP4Pe5QId8575PwLDZYPMa0FtLBfIIRo/edit).
 
 ## Data
+
 
 Include a citation for your data here. See
 <http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840> for guidance
