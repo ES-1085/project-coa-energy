@@ -5,6 +5,9 @@ COA Energy, Sierra, Hunter, Laila
 ``` r
 library(tidyverse)
 library(broom)
+install.packages(c("ggplot2", "gganimate"))
+library(gifski)
+library(transformr)
 ```
 
 ## 1. Introduction
@@ -17,7 +20,7 @@ found by calculating how much less oil the school is using, we will be
 able to calculate how much the school has decreased their CO2 emission.
 This data was collected by David Gibson. The data was collected through
 the yearly energy center analysis. This is a long term goal which is to
-make COA fossil fuel free, net 0, by 2030. Through this project we hope to
+make COA fossil free, net 0, by 2030. Through this project we hope to
 evaluate whether or not the school is on track to meet that goal when it
 comes to energy use of buildings. Our variables include the date the
 fuel was purchased, the cost, the amount of fuel in gallons. The
@@ -38,7 +41,7 @@ price of the transition.
 
 ## 2. Data
 
-```{r}
+``` r
 library(readxl)
 energy_use <- read_excel("../data/energy_use.xlsx", na = "NA")
 ```
@@ -273,12 +276,10 @@ naniar::gg_miss_var(energy_use)
 
 ``` r
 new_energy_use <- new_data %>%
- mutate() %>%
+ # mutate() %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
-                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
-                                  `Fuel Type` %in%
-              c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
                                   `Fuel Type` %in%
                 ("DYEDKEROSENE") ~ "Dyed Kerosene",
                                  TRUE ~ `Fuel Type`))
@@ -434,17 +435,127 @@ yearly_fuel_data = new_energy_use %>%
 fuel_type_yearly <- new_energy_use %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
   mutate(Year = year(`Delivery Date`)) %>%
-   group_by(`Fuel Type`, Year) %>% 
+   group_by(`Fuel Type`, Year, Building) %>% 
   summarize(total_gallons = sum(Gallons)) 
 ```
 
-    ## `summarise()` has grouped output by 'Fuel Type'. You can override using the
-    ## `.groups` argument.
+    ## `summarise()` has grouped output by 'Fuel Type', 'Year'. You can override using
+    ## the `.groups` argument.
 
 ``` r
 # fuel_type_yearly2 <- fuel_type_yearly %>%
 #   group_by(Building, Year, `Fuel Type`) %>%
 #   summarize(total_gallon_per_building = sum(total_gallons))
+```
+
+``` r
+fuel_type_yearly2 <- fuel_type_yearly %>%
+  mutate(Emissions= case_when("Fuel Oil" %in% `Fuel Type` ~ total_gallons*10.19,
+                              "Heating Oil" %in% `Fuel Type` ~ total_gallons*10.19,
+                              "Liquid Propane" %in% `Fuel Type` ~ total_gallons*5.72))
+```
+
+``` r
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~`Fuel Type`, nrow = 3)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : span too small.  fewer data values than degrees of freedom.
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : at 2022
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : radius 2.5e-05
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : all data on boundary of neighborhood. make span bigger
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : pseudoinverse used at 2022
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : neighborhood radius 0.005
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : reciprocal condition number 1
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : at 2023
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : radius 2.5e-05
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : all data on boundary of neighborhood. make span bigger
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : There are other near singularities as well. 2.5e-05
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : zero-width neighborhood. make span bigger
+
+    ## Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+    ## : zero-width neighborhood. make span bigger
+
+    ## Warning: Computation failed in `stat_smooth()`
+    ## Caused by error in `predLoess()`:
+    ## ! NA/NaN/Inf in foreign function call (arg 5)
+
+![](proposal_files/figure-gfm/emissions%20by%20fuel%20type-1.png)<!-- -->
+
+``` r
+fuel_type_yearly2 %>%
+  ggplot() +
+   geom_smooth(mapping = aes(x= Year, y = Emissions)) +
+ labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  facet_wrap(~Building)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+![](proposal_files/figure-gfm/emissions%20by%20building-1.png)<!-- -->
+
+``` r
+# fuel_type_yearly2 %>%
+#   ggplot() +
+#    geom_smooth(mapping = aes(x= Year, y = sumEmissions)) +
+#  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   facet_wrap(~Building)
+#  summarize(total_gallons = sum(Gallons, na.rm = FALSE))
+```
+
+``` r
+# fuel3 <- fuel_type_yearly2 %>% 
+#   filter(!is.na(Emissions)) %>% 
+# fuel_type_yearly3 <- fuel_type_yearly2 %>%
+#   arrange(Year) %>% 
+#   filter(`Fuel Type` == "Heating Oil")
+# 
+# anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
+#   geom_line()+
+#   geom_point()+
+#   facet_wrap(~`Fuel Type`, nrow = 3) +
+#   labs(title = "Emissions Over Time of Buildings by Fuel Type",
+# y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   transition_reveal(Year, range = NULL, keep_last = TRUE)
+#   
+# animate(anim2, renderer = gifski_renderer())
+#this graph is an animation of emissions per building througout the years by fuel type
+```
+
+``` r
+# saveGIF({
+#   for (i in unique(data$Year)) {
+#     print(animation + transition_states(Year == i))
+#   }
+# }, movie.name = "anim2.gif", interval = 0.2, ani.width = 600, ani.height = 400)
 ```
 
 ``` r

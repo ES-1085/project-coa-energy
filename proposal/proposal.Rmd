@@ -7,7 +7,7 @@ output: github_document
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(broom)
-#install.packages(c("ggplot2", "gganimate"))
+install.packages(c("ggplot2", "gganimate"))
 library(gifski)
 library(transformr)
 ```
@@ -72,33 +72,35 @@ energy_use %>%
 new_data <- energy_use %>%
    mutate(Building = case_when(Building %in% c("Turrets", "Turrets Annex") ~ "Turrets",
                             
-                               TRUE ~ Building)) #%>%
+                               TRUE ~ Building)) %>% mutate() %>%
+select(-c(`...8`,`...9`,`...10`))
   #distinct(Building)
 ```
 
-``` {r new_energy_use}
-new_energy_use <- new_data %>%
- mutate() %>%
-select(-c(`...8`,`...9`,`...10`))
-# this code removes random columns we do not need from the energy_use dataset
+``` {r DONT USE new_energy_use}
+# new_energy_use <- new_data %>%
+#  mutate() %>%
+# select(-c(`...8`,`...9`,`...10`))
+# # this code removes random columns we do not need from the energy_use dataset
+#I added the select function to the new_data set to combine new_data and new_energy_use, so moving forward use new_data
 ```
 
 ```{r total_gallons_sum1}
-new_energy_use %>%
+new_data %>%
   group_by(Building) %>%
-  summarize(total_gallons = sum(Gallons, na.rm = FALSE)) %>% 
+  summarize(total_gallons = sum(Gallons, na.rm = FALSE)) %>%
 arrange(desc(total_gallons))
 ```
 
 ```{r total Gallons used by each Building}
-new_energy_use %>%
+new_data %>%
   group_by(Building) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
   drop_na()
 ```
 
 ```{r}
-visdat::vis_dat(new_energy_use)
+visdat::vis_dat(new_data)
 #class exercise to view type of variables
 ```
 
@@ -121,28 +123,19 @@ naniar::gg_miss_var(energy_use)
 ```
 
 
-
 ``` {r}
 new_energy_use <- new_data %>%
  # mutate() %>%
 select(-c(`...8`,`...9`,`...10`)) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
-<<<<<<< HEAD
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
-=======
-                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
-                                  `Fuel Type` %in%
-              c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
                                   `Fuel Type` %in%
                 ("DYEDKEROSENE") ~ "Dyed Kerosene",
->>>>>>> 65da090bd2ffe4a1949d989957b302010610aac0
                                  TRUE ~ `Fuel Type`))
 ```
 
-
-
 ```{r missing_data}
-new_energy_use %>%
+new_data %>%
   mutate(Building = case_when(Building == "NA" ~ NA,
                               TRUE ~ Building)) %>%
   drop_na(Building) %>%
@@ -155,7 +148,7 @@ coord_flip()
 
 GRAPHS:
 ```{r}
-new_energy_use %>% 
+new_data%>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -187,7 +180,7 @@ new_data %>%
 ```
 
 ```{r fuel_type_usage}
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
 ggplot() +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
@@ -210,7 +203,7 @@ ggplot(aes(x = fct_reorder(Building, total_gals), y = total_gals)) +
 
 I am not sure what this one is: 
 ```{r}
-new_energy_use %>% 
+new_data%>% 
   group_by(Building, `Fuel Type`) %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   summarize(total_gals = sum(Gallons, na.rm = TRUE)) %>%
@@ -240,15 +233,16 @@ new_data %>%
 ```
 
 ``` {r yearly_fuel_data}
-yearly_fuel_data = new_energy_use %>%
+yearly_fuel_data = new_data %>%
   mutate(Year = year(`Delivery Date`)) %>%
    group_by(Building, Year) %>% 
   summarize(total_gallons = sum(Gallons)) %>%
    filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) 
 #this code creates the dataset "yearly_fuel_data" which sums up gallon deliveries by the four building per year.
 ``` 
+
 ```{r}
-fuel_type_yearly <- new_energy_use %>%
+fuel_type_yearly <- new_data %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
   mutate(Year = year(`Delivery Date`)) %>%
    group_by(`Fuel Type`, Year, Building) %>% 
@@ -273,6 +267,7 @@ fuel_type_yearly2 %>%
  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
   facet_wrap(~`Fuel Type`, nrow = 3)
 ```
+
 ```{r emissions by building}
 fuel_type_yearly2 %>%
   ggplot() +
@@ -293,27 +288,28 @@ fuel_type_yearly2 %>%
 ```{r animated graphs of emissions}
 # fuel3 <- fuel_type_yearly2 %>% 
 #   filter(!is.na(Emissions)) %>% 
-fuel_type_yearly3 <- fuel_type_yearly2 %>%
-  arrange(Year) %>% 
-  filter(`Fuel Type` == "Heating Oil")
-
-anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
-  geom_line()+
-  geom_point()+
-  facet_wrap(~`Fuel Type`, nrow = 3) +
-  labs(title = "Emissions Over Time of Buildings by Fuel Type",
-y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-  transition_reveal(Year, range = NULL, keep_last = TRUE)
-  
-animate(anim2, renderer = gifski_renderer())
+# fuel_type_yearly3 <- fuel_type_yearly2 %>%
+#   arrange(Year) %>% 
+#   filter(`Fuel Type` == "Heating Oil")
+# 
+# anim2 <- ggplot(fuel_type_yearly2, aes(x = Year, y = Emissions, colour = Building)) +
+#   geom_line()+
+#   geom_point()+
+#   facet_wrap(~`Fuel Type`, nrow = 3) +
+#   labs(title = "Emissions Over Time of Buildings by Fuel Type",
+# y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+#   transition_reveal(Year, range = NULL, keep_last = TRUE)
+#   
+# animate(anim2, renderer = gifski_renderer())
 #this graph is an animation of emissions per building througout the years by fuel type
 ```
+
 ```{r}
-saveGIF({
-  for (i in unique(data$Year)) {
-    print(animation + transition_states(Year == i))
-  }
-}, movie.name = "anim2.gif", interval = 0.2, ani.width = 600, ani.height = 400)
+# saveGIF({
+#   for (i in unique(data$Year)) {
+#     print(animation + transition_states(Year == i))
+#   }
+# }, movie.name = "anim2.gif", interval = 0.2, ani.width = 600, ani.height = 400)
 ```
   
 ``` {r yearly_fuel_geom_smooth}
@@ -327,8 +323,6 @@ yearly_fuel_data %>%
 ```
 
 ```{r yearly_fuel_geom_smooth_building}
-
-improvements <- data.frame(Building = c("Blair Tyson", ""), Improvement_Date = c("", ))
 yearly_fuel_data %>%
   ggplot() +
   geom_smooth(mapping = aes(x = Year, y = total_gallons), 
@@ -340,7 +334,7 @@ yearly_fuel_data %>%
 ``` 
 
 ```{r Turrets_Linegraphs}
-new_energy_use %>% 
+new_data%>% 
  filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -357,7 +351,7 @@ new_energy_use %>%
 ```
 
 ```{r Davis_Center_Linegraphs}
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Davis Center")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -375,7 +369,7 @@ new_energy_use %>%
 
 
 ```{r Blair_Tyson_Linegraph}
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Blair Tyson")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -392,7 +386,7 @@ new_energy_use %>%
 ```
 
 ```{r Seafox_Linegraph}
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Seafox")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -409,7 +403,7 @@ new_energy_use %>%
 ```
 
 ```{r Davis_Center_Fueluse}
-new_energy_use %>% 
+new_data %>% 
   filter(Building %in% c("Davis Center", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -427,7 +421,7 @@ new_energy_use %>%
 ```
 
 ```{r Blair_Tyson_Fueluse}
-new_energy_use %>% 
+new_data %>% 
   filter(Building %in% c("Blair Tyson", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -445,7 +439,7 @@ new_energy_use %>%
 ```
 
 ```{r Seafox_Fueluse}
-new_energy_use %>% 
+new_data %>% 
   filter(Building %in% c("Seafox")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -464,7 +458,7 @@ new_energy_use %>%
 ```
 
 ```{r Turrets_Fueluse}
-new_energy_use %>% 
+new_data%>% 
   filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -484,7 +478,7 @@ new_energy_use %>%
 
 
 ```{r All_FuelType}
-new_energy_use %>% 
+new_data %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
