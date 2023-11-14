@@ -428,7 +428,7 @@ new_data %>%
 ```
 
 ```{r Blair_Tyson_Fueluse}
-new_data %>% 
+new_energy_use %>% 
   filter(Building %in% c("Blair Tyson", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -446,7 +446,7 @@ new_data %>%
 ```
 
 ```{r Seafox_Fueluse}
-new_data %>% 
+new_energy_use %>% 
   filter(Building %in% c("Seafox")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -465,7 +465,7 @@ new_data %>%
 ```
 
 ```{r Turrets_Fueluse}
-new_data%>% 
+new_energy_use %>% 
   filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
@@ -485,7 +485,7 @@ new_data%>%
 
 
 ```{r All_FuelType}
-new_data %>% 
+new_energy_use %>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
