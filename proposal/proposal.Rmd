@@ -125,6 +125,9 @@ select(-c(`Tank number`, `Unit Cost`, Cost)) %>%
   select(- `Delivery Date`) %>%
       mutate(`Fuel Type` = case_when(`Fuel Type` %in% c("SLPP#2FUELOIL", "SLPP #2 FUEL OIL") ~ "Fuel Oil",
                                  `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil", `Fuel Type` %in% c("LIQUIDPROPANE", "SLPLIQPROPANE") ~ "Liquid Propane",
+                                 `Fuel Type` %in% c("#2HEATINGOIL", "#2 Heating Oil") ~ "Heating Oil",
+                                  `Fuel Type` %in%
+              c("SLPLIQPROPANE","LIQUIDPROPANE") ~ "Liquid Propane",
                                   `Fuel Type` %in%
                 ("DYEDKEROSENE") ~ "Dyed Kerosene",
                                  TRUE ~ `Fuel Type`))
