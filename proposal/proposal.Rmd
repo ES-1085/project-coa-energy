@@ -43,10 +43,9 @@ https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gi
 Summary Statistics:
 
 ```{r Initial analysis graph}
-image <- ggplot(data = energy_use) +
+image <- ggplot(data = new_energy_use) +
 geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
   coord_flip()
-
 ```
 
 ```{r}
