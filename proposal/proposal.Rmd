@@ -256,21 +256,41 @@ fuel_data %>%
 ```
 
 ```{r animated graphs of emissions}
-# fuel3 <- fuel_data %>%
-#   filter(!is.na(Emissions)) %>%
-# fuel_type_yearly3 <- fuel_data %>%
-#   arrange(Year) %>%
-#   filter(`Fuel Type` == "Heating Oil")
+fuel3 <- fuel_data %>%
+  filter(!is.na(Emissions)) 
+fuel_type_yearly3 <- fuel_data %>%
+  arrange(Year) %>%
+  filter(`Fuel Type` == "Heating Oil")
 
-# anim2 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = Building)) +
-#   geom_line()+
-#   geom_point()+
-#   facet_wrap(~`Fuel Type`, nrow = 3) +
-#   labs(title = "Emissions Over Time of Buildings by Fuel Type",
-# y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   transition_reveal(Year, range = NULL, keep_last = TRUE)
-#    
-# animate(anim2, renderer = gifski_renderer())
+anim2 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = Building)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Fuel Type`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+
+animate(anim2, renderer = gifski_renderer())
+anim_save("animation.gif", anim2)
+#this graph is an animation of emissions per building througout the years by fuel type
+```
+```{r animated graph of emissions2}
+fuel3 <- fuel_data %>%
+  filter(!is.na(Emissions))
+fuel_type_yearly3 <- fuel_data %>%
+  arrange(Year) %>%
+  filter(`Fuel Type` == "Heating Oil")
+
+anim3 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = `Fuel Type`)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Building`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+
+animate(anim3, renderer = gifski_renderer())
+anim_save("animation3.gif", anim3)
 #this graph is an animation of emissions per building througout the years by fuel type
 ```
 
@@ -412,7 +432,7 @@ new_data %>%
 ```
 
 ```{r Davis_Center_Fueluse}
-new_data %>% 
+new_energy_use %>% 
   filter(Building %in% c("Davis Center", "")) %>%
   select(Building , Gallons, `Delivery Date`, `Fuel Type`) %>%
   arrange(`Delivery Date`) %>%
