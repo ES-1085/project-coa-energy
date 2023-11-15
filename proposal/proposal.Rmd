@@ -496,6 +496,8 @@ new_energy_use %>%
   summarize(Gallons = sum(Gallons, na.rm = T),
             cumulative_Gallons = cumsum(Gallons)) %>%
 ggplot() + 
-  geom_col(aes(x = Building, y = cumulative_Gallons, fill = `Fuel Type`)) +
+  geom_col(aes(x = Building, y = cumulative_Gallons, fill = `Fuel Type`)) +  
+  scale_fill_viridis_d() +
+  labs( title = "Cumulative Gallons and Fuel Type By Building") +
   coord_flip()
 ```
