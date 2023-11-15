@@ -44,13 +44,13 @@ Summary Statistics:
 
 
 
-```{r}
+```{rSaving image}
 #pdf(file = 'output/image.pdf')
 file_path <- ('/cloud/project/extra')
 ggsave(filename = "myplot.png", path = file_path, plot = image, device = "png")
 ```
 
-```{r}
+```{rInstall package "visdat"}
 install.packages("visdat")
 library(visdat)
 library(naniar)
@@ -113,7 +113,7 @@ yearly_fuel_data = new_data %>%
 #this code creates the dataset "yearly_fuel_data" which sums up gallon deliveries by the four building per year.
 ``` 
 
-```{r}
+```{r Creating Fuel Type Data Set}
 fuel_data <- new_energy_use %>%
   filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>% 
   mutate(Year = year(`Delivery Date`)) %>%
@@ -142,7 +142,7 @@ new_energy_use %>%
   drop_na()
 ```
 
-```{r}
+```{r View missing data}
 visdat::vis_dat(new_data)
 #class exercise to view type of variables
 ```
@@ -258,27 +258,47 @@ fuel_data %>%
 ```
 
 ```{r animated graphs of emissions}
-# fuel3 <- fuel_data %>%
-#   filter(!is.na(Emissions)) %>%
-# fuel_type_yearly3 <- fuel_data %>%
-#   arrange(Year) %>%
-#   filter(`Fuel Type` == "Heating Oil")
+fuel3 <- fuel_data %>%
+  filter(!is.na(Emissions)) 
+fuel_type_yearly3 <- fuel_data %>%
+  arrange(Year) %>%
+  filter(`Fuel Type` == "Heating Oil")
 
-# anim2 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = Building)) +
-#   geom_line()+
-#   geom_point()+
-#   facet_wrap(~`Fuel Type`, nrow = 3) +
-#   labs(title = "Emissions Over Time of Buildings by Fuel Type",
-# y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
-#   transition_reveal(Year, range = NULL, keep_last = TRUE)
-#    
-# animate(anim2, renderer = gifski_renderer())
+anim2 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = Building)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Fuel Type`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+
+animate(anim2, renderer = gifski_renderer())
+anim_save("animation.gif", anim2)
+#this graph is an animation of emissions per building througout the years by fuel type
+```
+```{r animated graph of emissions2}
+fuel3 <- fuel_data %>%
+  filter(!is.na(Emissions))
+fuel_type_yearly3 <- fuel_data %>%
+  arrange(Year) %>%
+  filter(`Fuel Type` == "Heating Oil")
+
+anim3 <- ggplot(fuel_data, aes(x = Year, y = Emissions, colour = `Fuel Type`)) +
+  geom_line()+
+  geom_point()+
+  facet_wrap(~`Building`, nrow = 3) +
+  labs(title = "Emissions Over Time of Buildings by Fuel Type",
+y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
+  transition_reveal(Year, range = NULL, keep_last = TRUE)
+
+animate(anim3, renderer = gifski_renderer())
+anim_save("animation3.gif", anim3)
 #this graph is an animation of emissions per building througout the years by fuel type
 ```
 
 END OF PRESENTATIN GRAPHS
 
-```{r}
+```{r Gallons and Delivery Data Graph}
 new_data%>% 
  filter(Building %in% c("Turrets","Seafox", "Blair Tyson", "Davis Center" )) %>%
   select(Building , Gallons, `Delivery Date`) %>%
@@ -332,7 +352,7 @@ new_energy_use %>%
 #This graph shows use of fuel per building in gallons (not summed so just amount of fuel delivered). We can change x = Month to x = Year or x = Week. We can also change filter building to view either just one or more.
 ```
 
-```{r}
+```{r Saving animation}
 # saveGIF({
 #   for (i in unique(data$Year)) {
 #     print(animation + transition_states(Year == i))
