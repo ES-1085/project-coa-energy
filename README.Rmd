@@ -1,6 +1,6 @@
 ---
-title: Project title
-author: by Team name
+title: Reassessing COA's progress towards a fossil fuel free campus
+author: by Hunter Kitt, Laila Hammoudeh, Sierra Abrams
 output: github_document
 ---
 
@@ -19,13 +19,15 @@ You can also load your data here and present any analysis results / plots, but I
 And make sure to hide your code with  `echo = FALSE` unless the point you are trying to make is about the code itself.
 Your results with proper output and graphics go in your presentation, this space is for a brief summary of your project.
 
+
+
 ```{r load-data, echo = FALSE}
-# load data here, if you like
+
 ```
 
 ## Presentation
 
-Our presentation can be found [here](https://docs.google.com/presentation/d/1t2GxDbUH6NDmP4Pe5QId8575PwLDZYPMa0FtLBfIIRo/edit).
+Our presentation can be found [here](https://docs.google.com/presentation/d/1t2GxDbUH6NDmP4Pe5QId8575PwLDZYPMa0FtLBfIIRo/edit#slide=id.p).
 
 ## Data 
 
@@ -35,6 +37,5 @@ If you got your data off the web, make sure to note the retrieval date.
 
 ## References
 
-List any references here. You should, at a minimum, list your data source.
-
+Data from David Gibson, Director of Energy, College of the Atlantic, October 3rd.
 
