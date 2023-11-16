@@ -24,13 +24,6 @@ For conclusions, arts and science and Gates take are a massive portion of total 
 We were not the ones who recorded this data, nor have we done a comprehensive analysis of all on campus buildings/housing, just samples of large factors. Data for the past 6 months have not yet been added but once they are it will provide the oppurunity for a full year analysis with much more accurate findings as to the results of 2030 fossil fuel independence progress. 
 Any new renovations/installations and data collection will aid in future analysis, and including other buildings on campus for future work would be vital in the true progress for 2030 commitments. As heat pumps are installed and data is collected in off-campus buildings with heat pumps already, the primary focus will eventually turn to energy consumption and insulation projects as well. 
 
-
-```{r loading data, echo=FALSE}
-# library(readxl)
-# energy_use <- read_excel("../data/energy_use.xlsx", na = "NA")
-# glimpse(energy_use)
-```
-
 ## Presentation
 
 Our presentation can be found [here](https://docs.google.com/presentation/d/1t2GxDbUH6NDmP4Pe5QId8575PwLDZYPMa0FtLBfIIRo/edit#slide=id.p).
