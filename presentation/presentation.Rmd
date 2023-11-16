@@ -14,6 +14,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
 ```{r gallons-fueltype-building}
 new_energy_use %>% 
   group_by(Building, `Fuel Type`) %>%

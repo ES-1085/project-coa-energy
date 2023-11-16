@@ -42,11 +42,7 @@ https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gi
   
 Summary Statistics:
 
-```{r Initial analysis graph}
-image <- ggplot(data = new_energy_use) +
-geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
-  coord_flip()
-```
+
 
 ```{rSaving image}
 #pdf(file = 'output/image.pdf')
@@ -100,6 +96,12 @@ select(-c(`Tank number`, `Unit Cost`, Cost)) %>%
 # mutates `Delivery Date` to Year
 # mutates fuel type data so that it's easier to read
 
+```
+
+```{r Initial analysis graph}
+image <- ggplot(data = new_energy_use) +
+geom_bar( mapping = aes(x = Building, fill = `Fuel Type` )) +
+  coord_flip()
 ```
 
 ``` {r yearly_fuel_data}
@@ -274,6 +276,7 @@ animate(anim2, renderer = gifski_renderer())
 anim_save("animation.gif", anim2)
 #this graph is an animation of emissions per building througout the years by fuel type
 ```
+
 ```{r animated graph of emissions2}
 fuel3 <- fuel_data %>%
   filter(!is.na(Emissions))
@@ -359,7 +362,7 @@ new_energy_use %>%
 ```
 
 ```{r Turrets_Linegraphs}
-new_data%>% 
+new_energy_use %>% 
  filter(Building %in% c("Turrets")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -377,7 +380,7 @@ new_data%>%
 ```
 
 ```{r Davis_Center_Linegraphs}
-new_data %>% 
+new_energy_use %>% 
  filter(Building %in% c("Davis Center")) %>%
   select(Building , Gallons, `Delivery Date`) %>%
   arrange(`Delivery Date`) %>%
@@ -446,7 +449,7 @@ new_energy_use %>%
             cumulative_Gallons = cumsum(Gallons)) %>%
   ggplot() +
   geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
-  geom_vline(aes(xintercept = Month_Date[20]))
+  labs(title = "Fuel Usage of Davis Center")
 ```
 
 ```{r Blair_Tyson_Fueluse}
@@ -501,7 +504,7 @@ new_energy_use %>%
             cumulative_Gallons = cumsum(Gallons)) %>%
   ggplot() +
   geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
-  geom_vline(aes(xintercept = Month_Date[20])) +
+  labs(title = "Fuel Use of Turrets") +
   facet_wrap(~Building)
 ```
 
