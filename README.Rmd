@@ -30,7 +30,7 @@ Our presentation can be found [here](https://docs.google.com/presentation/d/1t2G
 
 ## Data 
 
-Data from David Gibson, Director of Energy, College of the Atlantic, October 3rd.
+Data from David Gibson, Director of Energy, College of the Atlantic, October 3rd. https://docs.google.com/spreadsheets/d/17HQLm0ieg3CpGigJwEUrePDcWNnYUJZW/edit#gid=570530532
 
 Carbon factors provided by the U.S. Environmental Protection Agency, Inventory of U.S. Greenhouse Gas Emissions and Sinks: 1990-2021, Tables A19, A-24, A-31, and A-215. 
 
