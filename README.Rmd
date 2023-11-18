@@ -16,8 +16,6 @@ Next up we graphed total gallons of fuel used throughout the years by all of the
 
 We then created an animated line graph of CO2 emissions of each of the buildings facet-wrapped by the type of fuel used throughout the years. This was the highlight of our project as it illustrates the fluctuations of CO2 emissions until they start to decrease around 2021. This aligns with energy efficiency installations in each of these buildings. Seafox and Davis window dresser installations in October and November of 2022. Blair Tyson had their heat pump water heater system installed in November of 2022. And Turrets had its basement insulation installed in January of 2023. 
 
-#I wrote an intro and summarized my part and graphs, feel free to add below
-
 Analyzing and comparing the fuel use between years by week is another good way at showing the reality of uncertainty of Winter in Maine. No two years in the same building looks exactly the same, due to differences in weather and storms, when they hit and for how long. How early winters begin/end, and when they are able to get refuels and ensure all buildings are able to be heated and used. These variables and the economics of fossil fuels make any analysis on the cost of fuel difficult to do and one we ended up avoiding in this project. 
 
 For conclusions, arts and science and Gates take are a massive portion of total fuel use, but some of the other largest and four buildings that we chose are improving in fuel consumption. Blair Tyson has improved massively, but all insulation and heat pump installations are having a visible impact on our fuel usage.
