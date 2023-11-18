@@ -212,7 +212,7 @@ geom_col() +
 ```{r emissions by fuel type}
 fuel_data %>%
   ggplot() +
-   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building)) +
+   geom_smooth(mapping = aes(x= Year, y = Emissions, color = Building), se = FALSE) +
  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon"))) +
   facet_wrap(~`Fuel Type`, nrow = 3) +
   theme_minimal()
@@ -222,7 +222,7 @@ fuel_data %>%
 yearly_fuel_data %>%
   ggplot() +
   geom_smooth(mapping = aes(x = Year, y = total_gallons), 
-              color = "navy")+
+              color = "navy", se = FALSE)+
   labs(title = "Gallons of Fuel Used Throughout the Years by the Four Buildings", y = "Total Gallons", x = "Year") +
  theme_minimal()
 #this graph shows the total gallons used yearly by all the four buildings we are focusing on. We can set the data to be "data" instead of "yearly_fuel_data" if we wanted to see the graph for all buildings. It is pretty cool as it shows the decrease of fuel usage.
@@ -232,7 +232,7 @@ yearly_fuel_data %>%
 yearly_fuel_data %>%
   ggplot() +
   geom_smooth(mapping = aes(x = Year, y = total_gallons), 
-              color = "navy") +
+              color = "navy", se = FALSE) +
   labs(title = "Gallons of Fuel Used Throughout the Years by Each of the Four Buildings", y = "Total Gallons", x = "Year")+
   facet_wrap(~Building)+
  theme_minimal()
@@ -243,7 +243,7 @@ yearly_fuel_data %>%
 fuel_data %>%
   ggplot() +
    geom_smooth(mapping = aes(x= Year, y = Emissions), 
-              color = "navy") +
+              color = "navy", se = FALSE) +
  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon")), title = "Emissions of Each of the Buildings Throughout the Years") +
   facet_wrap(~Building)+
   theme_minimal()
@@ -252,7 +252,7 @@ fuel_data %>%
 fuel_data %>%
   ggplot() +
    geom_smooth(mapping = aes(x= Year, y = Emissions), 
-              color = "navy") +
+              color = "navy", se = FALSE) +
  labs(y = expression(paste("Emissions" ~  KgCO[2], "/gallon")), title = "Total Emissions of the Buildings Throughout the Years") +
   theme_minimal()
 ```
