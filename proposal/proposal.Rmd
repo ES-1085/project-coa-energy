@@ -450,6 +450,7 @@ new_energy_use %>%
   ggplot() +
   geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
   labs(title = "Fuel Usage of Davis Center")
+#This graph shows the fuel usage, in both type and cumulative gallons, for Davis Center
 ```
 
 ```{r Blair_Tyson_Fueluse}
@@ -468,6 +469,7 @@ new_energy_use %>%
   ggplot() +
   geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
   geom_vline(aes(xintercept = Month_Date[20]))
+#This graph shows the fuel usage, in both type and cumulative gallons, for Blair Tyson
 ```
 
 ```{r Seafox_Fueluse}
@@ -487,6 +489,7 @@ new_energy_use %>%
   geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
   geom_vline(aes(xintercept = Month_Date[20])) +
   facet_wrap(~Building)
+#This graph shows the fuel usage, in both type and cumulative gallons, for Seafox
 ```
 
 ```{r Turrets_Fueluse}
@@ -506,6 +509,7 @@ new_energy_use %>%
   geom_area(mapping = aes(x = Month_Date, y = cumulative_Gallons, fill = `Fuel Type`)) +
   labs(title = "Fuel Use of Turrets") +
   facet_wrap(~Building)
+#This graph shows the fuel usage, in both type and cumulative gallons, for Turrets
 ```
 
 
@@ -526,4 +530,5 @@ ggplot() +
   scale_fill_viridis_d() +
   labs( title = "Cumulative Gallons and Fuel Type By Building") +
   coord_flip()
+#This graph shows the general fuel usage of our 4 main buildings, and is a simple visualization of the different amounts of fuel each location uses, as well as the more recent switch to fuel oil.
 ```
